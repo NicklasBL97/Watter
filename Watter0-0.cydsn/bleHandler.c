@@ -32,6 +32,9 @@
 cy_stc_ble_conn_handle_t appConnHandle;
 static SemaphoreHandle_t bleSemaphore;
 
+int16 currentPower = 0;
+int16 currentCadance = 0;
+
 static uint8_t powerCPData[CY_BLE_GATT_DEFAULT_MTU - 2u] = {3u, CY_BLE_CPS_CP_OC_RC, CY_BLE_CPS_CP_OC_SCV, CY_BLE_CPS_CP_RC_SUCCESS};
 
 void genericEventHandler(uint32 event, void* eventParameter)
@@ -44,57 +47,54 @@ void genericEventHandler(uint32 event, void* eventParameter)
     
     uint8_t locCharIndex;
     locCharIndex = ((cy_stc_ble_cps_char_value_t *)eventParameter)->charIndex;
-    
-    printf("Event: 0x%x\n\r",event);
+    uint32_t i;
+    //printf("Event: 0x%x\n\r",event);
     switch (event)
     {
         case CY_BLE_EVT_STACK_ON:
         case CY_BLE_EVT_GAP_DEVICE_DISCONNECTED:
-            printf("CY_BLE_EVT_GAP_DEVICE_DISCONNECTED\r\n");
+            //printf("CY_BLE_EVT_GAP_DEVICE_DISCONNECTED\r\n");
             Cy_GPIO_Write(LED_ADV_PORT,LED_ADV_NUM,LED_ON);
             Cy_GPIO_Write(LED_CONN_PORT,LED_CONN_NUM,LED_OFF);
             Cy_BLE_GAPP_StartAdvertisement(CY_BLE_ADVERTISING_FAST,CY_BLE_PERIPHERAL_CONFIGURATION_0_INDEX);
         break;
             
         case CY_BLE_EVT_GATT_CONNECT_IND:
-            printf("CY_BLE_EVT_GATT_CONNECT_IND\r\n");
+            //printf("CY_BLE_EVT_GATT_CONNECT_IND\r\n");
             setConnectionHandle(&appConnHandle,eventParameter);
             Cy_GPIO_Write(LED_CONN_PORT,LED_CONN_NUM,LED_ON);
             Cy_GPIO_Write(LED_ADV_PORT,LED_ADV_NUM,LED_OFF);
         break;
         
         case CY_BLE_EVT_GATTS_WRITE_REQ:
-            printf("CY_BLE_EVT_GATTS_WRITE_REQ attr handle: %4.4x , value: ",
-                        ((cy_stc_ble_gatts_write_cmd_req_param_t *)eventParameter)->handleValPair.attrHandle);
-            uint32_t i;
+            //printf("CY_BLE_EVT_GATTS_WRITE_REQ attr handle: %4.4x , value: ",((cy_stc_ble_gatts_write_cmd_req_param_t *)eventParameter)->handleValPair.attrHandle);
             for(i = 0; i < ((cy_stc_ble_gatts_write_cmd_req_param_t *)eventParameter)->handleValPair.value.len; i++)
             {
-                printf("%2.2x ", ((cy_stc_ble_gatts_write_cmd_req_param_t *)eventParameter)->handleValPair.value.val[i]);
+                //printf("%2.2x ", ((cy_stc_ble_gatts_write_cmd_req_param_t *)eventParameter)->handleValPair.value.val[i]);
             }
-            printf("\r\n");
+            //printf("\r\n");
             //Cy_BLE_GATTS_WriteEventHandler((cy_stc_ble_gatts_write_cmd_req_param_t *)eventParameter);
             Cy_BLE_GATTS_WriteRsp(appConnHandle);
         break;
             
         case CY_BLE_EVT_GATTS_INDICATION_ENABLED:
-            printf("CY_BLE_EVT_GATTS_INDICATION_ENABLED\n\r");
+            //printf("CY_BLE_EVT_GATTS_INDICATION_ENABLED\n\r");
         break;
             
         case CY_BLE_EVT_GAP_AUTH_REQ:
-            printf("CY_BLE_EVT_GAP_AUTH_REQ\r\n");
+            //printf("CY_BLE_EVT_GAP_AUTH_REQ\r\n");
         break;
             
         case CY_BLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ:
-            printf("CY_BLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ: handle: %x \r\n", 
-                        ((cy_stc_ble_gatts_char_val_read_req_t *)eventParameter)->attrHandle);
+            //printf("CY_BLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ: handle: %x \r\n", ((cy_stc_ble_gatts_char_val_read_req_t *)eventParameter)->attrHandle);
         break;
         
         case CY_BLE_EVT_CPSS_WRITE_CHAR:
-            printf("CY_BLE_EVT_CPSS_WRITE_CHAR\r\n");
+            //printf("CY_BLE_EVT_CPSS_WRITE_CHAR\r\n");
         break;
         
         case CY_BLE_EVT_CPSS_NOTIFICATION_ENABLED:
-            printf("CY_BLE_EVT_CPSS_NOTIFICATION_ENABLED: char: %x\r\n", locCharIndex);
+            //printf("CY_BLE_EVT_CPSS_NOTIFICATION_ENABLED: char: %x\r\n", locCharIndex);
         break;
             
             
@@ -104,23 +104,16 @@ void genericEventHandler(uint32 event, void* eventParameter)
     
 }
 
-int16 currentpower = 0;
-
-typedef struct SendEffekt_t {
-    uint16 flags;
-    int16 power;
-}SendEffekt_t;
-
 void SendEffekt(void* arg){
     (void)arg;
     
     cy_en_ble_api_result_t apiResult = CY_BLE_SUCCESS;
-    printf("SendEffekt task started\r\n");
+    //printf("SendEffekt task started\r\n");
     
     while(1){
         
         SendEffekt_t e;
-        e.power = currentpower;
+        e.power = currentPower;
         e.flags = 0x0000;
         
         
@@ -141,11 +134,11 @@ void SendEffekt(void* arg){
           
         if(apiResult != CY_BLE_SUCCESS)
         {
-            printf("Cy_BLE_CPSS_GetCharacteristicDescriptor API Error: 0x%x \r\n", apiResult);
+            //printf("Cy_BLE_CPSS_GetCharacteristicDescriptor API Error: 0x%x \r\n", apiResult);
         }
         else if(cccd == CY_BLE_CCCD_NOTIFICATION)
         {
-            printf("processing events\n\r");
+            //printf("processing events\n\r");
             do
             {
             Cy_BLE_ProcessEvents();
@@ -156,12 +149,12 @@ void SendEffekt(void* arg){
             if(Cy_BLE_GetConnectionState(appConnHandle) >= CY_BLE_CONN_STATE_CONNECTED)
             {
             
-            printf("sending data\n\r");
+            //printf("sending data\n\r");
             apiResult = Cy_BLE_CPSS_SendNotification(appConnHandle, CY_BLE_CPS_POWER_MEASURE, length, powerMeasureData);
-            currentpower++;
+            currentPower++;
             if(apiResult != CY_BLE_SUCCESS)
                 {
-                    printf("CpssSendNotification API Error: %x \r\n", apiResult);
+                    //printf("CpssSendNotification API Error: %x \r\n", apiResult);
                 }
             
             }
@@ -181,7 +174,7 @@ void bleInterruptNotify(){
 void bleTask(void* arg){
     (void)arg;
     
-    printf("BLE task started\r\n");
+    //printf("BLE task started\r\n");
     
     bleSemaphore = xSemaphoreCreateCounting(UINT_MAX,0);
     

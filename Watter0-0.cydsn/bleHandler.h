@@ -14,6 +14,15 @@
 #pragma once
 #include "project.h"
 
+typedef struct SendEffekt_t {
+    uint16 flags;
+    int16 power;
+}SendEffekt_t;
+
+
+int16 currentPower;
+int16 currentCadance;
+
 cy_stc_ble_conn_handle_t appConnHandle;
 
 void genericEventHandler(uint32 event, void* eventParameter);

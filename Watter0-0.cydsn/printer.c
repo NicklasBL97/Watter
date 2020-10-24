@@ -30,6 +30,7 @@ void printSystemInfo(void* info){
         printf("System information about Watter:\n\n\r");
         printf("Current power: %d\r\n",*sysinfo->effekt);
         printf("Current cadance: %d\r\n",*sysinfo->cadance);
+        printf("Current BatteryLevel: %d\r\n",*sysinfo->batterylvl);
         
         vTaskDelay(1000);
     }

@@ -18,6 +18,7 @@
 typedef struct SystemInfo{
     int16* effekt;
     int16* cadance;
+    uint8* batterylvl;
 }SystemInfo;
 
 //Debug printing over SWD

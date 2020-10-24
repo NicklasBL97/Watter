@@ -32,9 +32,6 @@
 cy_stc_ble_conn_handle_t appConnHandle;
 static SemaphoreHandle_t bleSemaphore;
 
-int16 currentPower = 0;
-int16 currentCadance = 0;
-
 static uint8_t powerCPData[CY_BLE_GATT_DEFAULT_MTU - 2u] = {3u, CY_BLE_CPS_CP_OC_RC, CY_BLE_CPS_CP_OC_SCV, CY_BLE_CPS_CP_RC_SUCCESS};
 
 void genericEventHandler(uint32 event, void* eventParameter)
@@ -97,7 +94,6 @@ void genericEventHandler(uint32 event, void* eventParameter)
             //printf("CY_BLE_EVT_CPSS_NOTIFICATION_ENABLED: char: %x\r\n", locCharIndex);
         break;
             
-            
         default:
         break;
     }
@@ -105,31 +101,15 @@ void genericEventHandler(uint32 event, void* eventParameter)
 }
 
 void SendEffekt(void* arg){
-    (void)arg;
+    SendEffekt_t* effektinfo = (SendEffekt_t*)arg;
+    
+    int16* currentPower = &effektinfo->power;
     
     cy_en_ble_api_result_t apiResult = CY_BLE_SUCCESS;
     //printf("SendEffekt task started\r\n");
     
     while(1){
-        
-        SendEffekt_t e;
-        e.power = currentPower;
-        e.flags = 0x0000;
-        
-        
-        uint8_t powerMeasureData[CY_BLE_GATT_DEFAULT_MTU - 3];
-        uint8_t length = 0;
         uint16_t cccd = CY_BLE_CCCD_DEFAULT;
-        
-        Cy_BLE_Set16ByPtr(powerMeasureData, (CY_BLE_CPS_CPM_TORQUE_PRESENT_BIT |
-                                            CY_BLE_CPS_CPM_TORQUE_SOURCE_BIT |
-                                            CY_BLE_CPS_CPM_WHEEL_BIT |
-                                            CY_BLE_CPS_CPM_ENERGY_BIT) & e.flags);
-        
-        length += sizeof(e.flags);
-        Cy_BLE_Set16ByPtr(powerMeasureData + length, e.power);
-        length += sizeof(e.power);
-        
         apiResult = Cy_BLE_CPSS_GetCharacteristicDescriptor(appConnHandle, CY_BLE_CPS_POWER_MEASURE, CY_BLE_CPS_CCCD, CY_BLE_CCCD_LEN, (uint8_t*)&cccd);
           
         if(apiResult != CY_BLE_SUCCESS)
@@ -138,6 +118,23 @@ void SendEffekt(void* arg){
         }
         else if(cccd == CY_BLE_CCCD_NOTIFICATION)
         {
+            
+            SendEffekt_t e;
+            e.power = *currentPower;
+            e.flags = 0x0000;
+
+            uint8_t powerMeasureData[CY_BLE_GATT_DEFAULT_MTU - 3];
+            uint8_t length = 0;
+        
+            Cy_BLE_Set16ByPtr(powerMeasureData, (CY_BLE_CPS_CPM_TORQUE_PRESENT_BIT |
+                                            CY_BLE_CPS_CPM_TORQUE_SOURCE_BIT |
+                                            CY_BLE_CPS_CPM_WHEEL_BIT |
+                                            CY_BLE_CPS_CPM_ENERGY_BIT) & e.flags);
+        
+            length += sizeof(e.flags);
+            Cy_BLE_Set16ByPtr(powerMeasureData + length, e.power);
+            length += sizeof(e.power);
+
             //printf("processing events\n\r");
             do
             {
@@ -151,7 +148,7 @@ void SendEffekt(void* arg){
             
             //printf("sending data\n\r");
             apiResult = Cy_BLE_CPSS_SendNotification(appConnHandle, CY_BLE_CPS_POWER_MEASURE, length, powerMeasureData);
-            currentPower++;
+            (*currentPower)++;
             if(apiResult != CY_BLE_SUCCESS)
                 {
                     //printf("CpssSendNotification API Error: %x \r\n", apiResult);
@@ -162,6 +159,20 @@ void SendEffekt(void* arg){
         vTaskDelay(250);
     }
     
+}
+
+void updateBattery(void* arg){
+    uint8* batterylvl = arg;
+    while(1){
+        (*batterylvl)--;
+        
+        if(*batterylvl < 0)
+            *batterylvl = 100;
+        
+        Cy_BLE_BASS_SetCharacteristicValue(0,CY_BLE_BAS_BATTERY_LEVEL,sizeof(uint8),batterylvl);
+        
+        vTaskDelay(10000);
+    }
 }
 
 void bleInterruptNotify(){
@@ -187,6 +198,7 @@ void bleTask(void* arg){
     
     Cy_BLE_RegisterAppHostCallback(bleInterruptNotify);
     Cy_BLE_CPS_RegisterAttrCallback(bleInterruptNotify);
+    Cy_BLE_BAS_RegisterAttrCallback(bleInterruptNotify);
     while(1)
     {
         xSemaphoreTake(bleSemaphore,portMAX_DELAY);

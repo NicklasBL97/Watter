@@ -17,11 +17,8 @@
 typedef struct SendEffekt_t {
     uint16 flags;
     int16 power;
+    int16 cadance;
 }SendEffekt_t;
-
-
-int16 currentPower;
-int16 currentCadance;
 
 cy_stc_ble_conn_handle_t appConnHandle;
 
@@ -30,3 +27,4 @@ void bleInterruptNotify();
 void bleTask(void* arg);
 void setConnectionHandle(cy_stc_ble_conn_handle_t* handle, void* eventParam);
 void SendEffekt(void* arg);
+void updateBattery(void* arg);

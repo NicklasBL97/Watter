@@ -29,8 +29,11 @@
 #define CPS_CP_RESP_VALUE                           (3u)
 #define CPS_CP_RESP_PARAMETER                       (4u)
 
+
+
 cy_stc_ble_conn_handle_t appConnHandle;
 static SemaphoreHandle_t bleSemaphore;
+CONNECTIONSTATE connState = NOT_CONNECTED;
 
 static uint8_t powerCPData[CY_BLE_GATT_DEFAULT_MTU - 2u] = {3u, CY_BLE_CPS_CP_OC_RC, CY_BLE_CPS_CP_OC_SCV, CY_BLE_CPS_CP_RC_SUCCESS};
 
@@ -53,12 +56,14 @@ void genericEventHandler(uint32 event, void* eventParameter)
             //printf("CY_BLE_EVT_GAP_DEVICE_DISCONNECTED\r\n");
             Cy_GPIO_Write(LED_ADV_PORT,LED_ADV_NUM,LED_ON);
             Cy_GPIO_Write(LED_CONN_PORT,LED_CONN_NUM,LED_OFF);
+            connState = NOT_CONNECTED;
             Cy_BLE_GAPP_StartAdvertisement(CY_BLE_ADVERTISING_FAST,CY_BLE_PERIPHERAL_CONFIGURATION_0_INDEX);
         break;
             
         case CY_BLE_EVT_GATT_CONNECT_IND:
             //printf("CY_BLE_EVT_GATT_CONNECT_IND\r\n");
             setConnectionHandle(&appConnHandle,eventParameter);
+            connState = CONNECTED;
             Cy_GPIO_Write(LED_CONN_PORT,LED_CONN_NUM,LED_ON);
             Cy_GPIO_Write(LED_ADV_PORT,LED_ADV_NUM,LED_OFF);
         break;

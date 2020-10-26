@@ -153,7 +153,6 @@ void SendEffekt(void* arg){
             
             //printf("sending data\n\r");
             apiResult = Cy_BLE_CPSS_SendNotification(appConnHandle, CY_BLE_CPS_POWER_MEASURE, length, powerMeasureData);
-            (*currentPower)++;
             if(apiResult != CY_BLE_SUCCESS)
                 {
                     //printf("CpssSendNotification API Error: %x \r\n", apiResult);

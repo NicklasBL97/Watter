@@ -11,6 +11,7 @@
 */
 
 /* [] END OF FILE */
+#pragma once
 #include "project.h"
 #include "bleHandler.h"
 

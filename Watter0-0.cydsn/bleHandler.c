@@ -19,6 +19,7 @@
 #include "semphr.h"
 #include "limits.h"
 #include "bleHandler.h"
+#include "sampler.h"
 
 #define LED_ON 0
 #define LED_OFF 1
@@ -30,30 +31,22 @@
 #define CPS_CP_RESP_PARAMETER                       (4u)
 
 
-
-cy_stc_ble_conn_handle_t appConnHandle;
+static cy_stc_ble_conn_handle_t appConnHandle;
 static SemaphoreHandle_t bleSemaphore;
 CONNECTIONSTATE connState = NOT_CONNECTED;
 
-static uint8_t powerCPData[CY_BLE_GATT_DEFAULT_MTU - 2u] = {3u, CY_BLE_CPS_CP_OC_RC, CY_BLE_CPS_CP_OC_SCV, CY_BLE_CPS_CP_RC_SUCCESS};
+SendEffekt_t sendEffectInfo;
+SemaphoreHandle_t powerMutex;
 
-void genericEventHandler(uint32 event, void* eventParameter)
-{
-    void* parameter = eventParameter;
-    //setting a char_value
-    //uint8 batterylvl = 42;
-    //Cy_BLE_BASS_SetCharacteristicValue(0,CY_BLE_BAS_BATTERY_LEVEL,sizeof(uint8),&batterylvl);
-    //cy_stc_ble_gatts_char_val_read_req_t* readReqParameter;
-    
-    uint8_t locCharIndex;
-    locCharIndex = ((cy_stc_ble_cps_char_value_t *)eventParameter)->charIndex;
-    uint32_t i;
+void genericEventHandler(uint32 event, void* eventParameter){
     //printf("Event: 0x%x\n\r",event);
     switch (event)
     {
         case CY_BLE_EVT_STACK_ON:
         case CY_BLE_EVT_GAP_DEVICE_DISCONNECTED:
-            //printf("CY_BLE_EVT_GAP_DEVICE_DISCONNECTED\r\n");
+            xSemaphoreTake(printerSema,portMAX_DELAY);
+            printf("CY_BLE_EVT_GAP_DEVICE_DISCONNECTED\r\n");
+            xSemaphoreGive(printerSema);
             Cy_GPIO_Write(LED_ADV_PORT,LED_ADV_NUM,LED_ON);
             Cy_GPIO_Write(LED_CONN_PORT,LED_CONN_NUM,LED_OFF);
             connState = NOT_CONNECTED;
@@ -61,7 +54,10 @@ void genericEventHandler(uint32 event, void* eventParameter)
         break;
             
         case CY_BLE_EVT_GATT_CONNECT_IND:
-            //printf("CY_BLE_EVT_GATT_CONNECT_IND\r\n");
+            xSemaphoreTake(printerSema,portMAX_DELAY);
+            printf("CY_BLE_EVT_GATT_CONNECT_IND\r\n");
+            xSemaphoreGive(printerSema);
+            
             setConnectionHandle(&appConnHandle,eventParameter);
             connState = CONNECTED;
             Cy_GPIO_Write(LED_CONN_PORT,LED_CONN_NUM,LED_ON);
@@ -69,18 +65,34 @@ void genericEventHandler(uint32 event, void* eventParameter)
         break;
         
         case CY_BLE_EVT_GATTS_WRITE_REQ:
-            //printf("CY_BLE_EVT_GATTS_WRITE_REQ attr handle: %4.4x , value: ",((cy_stc_ble_gatts_write_cmd_req_param_t *)eventParameter)->handleValPair.attrHandle);
-            for(i = 0; i < ((cy_stc_ble_gatts_write_cmd_req_param_t *)eventParameter)->handleValPair.value.len; i++)
             {
-                //printf("%2.2x ", ((cy_stc_ble_gatts_write_cmd_req_param_t *)eventParameter)->handleValPair.value.val[i]);
+                cy_stc_ble_gatts_write_cmd_req_param_t* writeReqParameter = (cy_stc_ble_gatts_write_cmd_req_param_t*)eventParameter;
+                
+                if (writeReqParameter->handleValPair.attrHandle == CY_BLE_SETT_TRANSFERDELAY_CHAR_HANDLE) {
+                    uint8 val = writeReqParameter->handleValPair.value.val[0];
+                    if(val == 1 || val == 2 || val == 3 || val == 4)
+                    {
+                        updateSettingsGatt(TRANSFERRATE ,val, CY_BLE_GATT_DB_PEER_INITIATED);
+                        sendEffectInfo.delay = (uint16)(1000/val);
+                    }
+                }
+                if(writeReqParameter->handleValPair.attrHandle == CY_BLE_SETT_SAMPLEDELAY_CHAR_HANDLE){
+                    uint8 val = writeReqParameter->handleValPair.value.val[0];
+                    if(val == 5 || val == 10 || val == 15 || val == 20)
+                    {
+                        updateSettingsGatt(SAMPLERATE ,val, CY_BLE_GATT_DB_PEER_INITIATED);
+                        samples.delay = (uint16)(1000/val);
+                    }
+                }
+            Cy_BLE_GATTS_WriteRsp(writeReqParameter->connHandle);
             }
-            //printf("\r\n");
-            //Cy_BLE_GATTS_WriteEventHandler((cy_stc_ble_gatts_write_cmd_req_param_t *)eventParameter);
-            Cy_BLE_GATTS_WriteRsp(appConnHandle);
         break;
             
         case CY_BLE_EVT_GATTS_INDICATION_ENABLED:
-            //printf("CY_BLE_EVT_GATTS_INDICATION_ENABLED\n\r");
+            xSemaphoreTake(printerSema,portMAX_DELAY);
+            printf("CY_BLE_EVT_GATTS_INDICATION_ENABLED\n\r");
+            xSemaphoreGive(printerSema);
+            
         break;
             
         case CY_BLE_EVT_GAP_AUTH_REQ:
@@ -88,7 +100,10 @@ void genericEventHandler(uint32 event, void* eventParameter)
         break;
             
         case CY_BLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ:
-            //printf("CY_BLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ: handle: %x \r\n", ((cy_stc_ble_gatts_char_val_read_req_t *)eventParameter)->attrHandle);
+            xSemaphoreTake(printerSema,portMAX_DELAY);
+            printf("CY_BLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ: handle: %x \r\n", ((cy_stc_ble_gatts_char_val_read_req_t *)eventParameter)->attrHandle);
+            xSemaphoreGive(printerSema);
+            
         break;
         
         case CY_BLE_EVT_CPSS_WRITE_CHAR:
@@ -96,6 +111,9 @@ void genericEventHandler(uint32 event, void* eventParameter)
         break;
         
         case CY_BLE_EVT_CPSS_NOTIFICATION_ENABLED:
+            xSemaphoreTake(printerSema,portMAX_DELAY);
+            printf("CY_BLE_EVT_CPSS_NOTIFICATION_ENABLED\n\r");
+            xSemaphoreGive(printerSema);
             //printf("CY_BLE_EVT_CPSS_NOTIFICATION_ENABLED: char: %x\r\n", locCharIndex);
         break;
             
@@ -105,80 +123,6 @@ void genericEventHandler(uint32 event, void* eventParameter)
     
 }
 
-void SendEffekt(void* arg){
-    SendEffekt_t* effektinfo = (SendEffekt_t*)arg;
-    
-    int16* currentPower = &effektinfo->power;
-    
-    cy_en_ble_api_result_t apiResult = CY_BLE_SUCCESS;
-    //printf("SendEffekt task started\r\n");
-    
-    while(1){
-        uint16_t cccd = CY_BLE_CCCD_DEFAULT;
-        apiResult = Cy_BLE_CPSS_GetCharacteristicDescriptor(appConnHandle, CY_BLE_CPS_POWER_MEASURE, CY_BLE_CPS_CCCD, CY_BLE_CCCD_LEN, (uint8_t*)&cccd);
-          
-        if(apiResult != CY_BLE_SUCCESS)
-        {
-            //printf("Cy_BLE_CPSS_GetCharacteristicDescriptor API Error: 0x%x \r\n", apiResult);
-        }
-        else if(cccd == CY_BLE_CCCD_NOTIFICATION)
-        {
-            
-            SendEffekt_t e;
-            e.power = *currentPower;
-            e.flags = 0x0000;
-
-            uint8_t powerMeasureData[CY_BLE_GATT_DEFAULT_MTU - 3];
-            uint8_t length = 0;
-        
-            Cy_BLE_Set16ByPtr(powerMeasureData, (CY_BLE_CPS_CPM_TORQUE_PRESENT_BIT |
-                                            CY_BLE_CPS_CPM_TORQUE_SOURCE_BIT |
-                                            CY_BLE_CPS_CPM_WHEEL_BIT |
-                                            CY_BLE_CPS_CPM_ENERGY_BIT) & e.flags);
-        
-            length += sizeof(e.flags);
-            Cy_BLE_Set16ByPtr(powerMeasureData + length, e.power);
-            length += sizeof(e.power);
-
-            //printf("processing events\n\r");
-            do
-            {
-            Cy_BLE_ProcessEvents();
-            }
-            while(Cy_BLE_GATT_GetBusyStatus(appConnHandle.attId) == CY_BLE_STACK_STATE_BUSY);
-            
-            
-            if(Cy_BLE_GetConnectionState(appConnHandle) >= CY_BLE_CONN_STATE_CONNECTED)
-            {
-            
-            //printf("sending data\n\r");
-            apiResult = Cy_BLE_CPSS_SendNotification(appConnHandle, CY_BLE_CPS_POWER_MEASURE, length, powerMeasureData);
-            if(apiResult != CY_BLE_SUCCESS)
-                {
-                    //printf("CpssSendNotification API Error: %x \r\n", apiResult);
-                }
-            
-            }
-        }
-        vTaskDelay(250);
-    }
-    
-}
-
-void updateBattery(void* arg){
-    uint8* batterylvl = arg;
-    while(1){
-        (*batterylvl)--;
-        
-        if(*batterylvl < 0)
-            *batterylvl = 100;
-        
-        Cy_BLE_BASS_SetCharacteristicValue(0,CY_BLE_BAS_BATTERY_LEVEL,sizeof(uint8),batterylvl);
-        
-        vTaskDelay(10000);
-    }
-}
-
 void bleInterruptNotify(){
     BaseType_t xHigherPriorityTaskWoken;
     xHigherPriorityTaskWoken = pdFALSE;
@@ -186,10 +130,8 @@ void bleInterruptNotify(){
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
-void bleTask(void* arg){
+void task_ble(void* arg){
     (void)arg;
-    
-    //printf("BLE task started\r\n");
     
     bleSemaphore = xSemaphoreCreateCounting(UINT_MAX,0);
     
@@ -210,6 +152,99 @@ void bleTask(void* arg){
     }
 }
 
+void task_SendEffekt(void* arg){
+    
+    while(1){
+        uint16_t cccd = CY_BLE_CCCD_DEFAULT;
+        Cy_BLE_CPSS_GetCharacteristicDescriptor(appConnHandle, CY_BLE_CPS_POWER_MEASURE, CY_BLE_CPS_CCCD, CY_BLE_CCCD_LEN, (uint8_t*)&cccd);
+          
+        if(cccd == CY_BLE_CCCD_NOTIFICATION)
+        {
+            
+            SendEffekt_t e;
+            e.power = sendEffectInfo.power;
+            e.cadance = sendEffectInfo.cadance;
+            e.flags = sendEffectInfo.flags;
+            e.flags |= CY_BLE_CPS_CPM_CRANK_BIT;
+            uint8_t powerMeasureData[CY_BLE_GATT_DEFAULT_MTU - 3];
+            uint8_t length = 0;
+        
+            Cy_BLE_Set16ByPtr(powerMeasureData, e.flags);
+            length += sizeof(e.flags);
+            Cy_BLE_Set16ByPtr(powerMeasureData + length, e.power);
+            length += sizeof(e.power);
+            Cy_BLE_Set16ByPtr(powerMeasureData + length, e.cadance);
+            length += sizeof(e.cadance);
+            Cy_BLE_Set16ByPtr(powerMeasureData + length, 0);
+            length += sizeof(e.cadance);
+            
+            do
+            {
+            Cy_BLE_ProcessEvents();
+            }
+            while(Cy_BLE_GATT_GetBusyStatus(appConnHandle.attId) == CY_BLE_STACK_STATE_BUSY);
+            
+            
+            if(Cy_BLE_GetConnectionState(appConnHandle) >= CY_BLE_CONN_STATE_CONNECTED)
+            {
+                Cy_BLE_CPSS_SendNotification(appConnHandle, CY_BLE_CPS_POWER_MEASURE, length, powerMeasureData);
+            }
+        }
+        vTaskDelay(sendEffectInfo.delay);
+    }
+    
+}
+
+void task_updateBattery(void* arg){
+    uint8* batterylvl = arg;
+    while(1){
+        (*batterylvl)--;
+        
+        if(*batterylvl > 100)
+            *batterylvl = 100;
+        
+        Cy_BLE_BASS_SetCharacteristicValue(0,CY_BLE_BAS_BATTERY_LEVEL,sizeof(uint8),batterylvl);
+        
+        vTaskDelay(10000);
+    }
+}
+
 void setConnectionHandle(cy_stc_ble_conn_handle_t* handle, void* eventParam){
     *handle = *(cy_stc_ble_conn_handle_t *)eventParam;
 }
+
+void SendEffekt_init(){
+    sendEffectInfo.power = 0;
+    sendEffectInfo.cadance = 0;
+    sendEffectInfo.flags = 0;
+    sendEffectInfo.delay = 250;
+}
+
+void updateSettingsGatt(settings_t setting ,uint16 value, uint8 flags){
+    cy_stc_ble_gatt_handle_value_pair_t Hvp;
+    
+    switch(setting)
+    {
+        case TRANSFERRATE: 
+            Hvp.attrHandle = CY_BLE_SETT_TRANSFERDELAY_CHAR_HANDLE;
+        break;
+        
+        case SAMPLERATE:
+            Hvp.attrHandle = CY_BLE_SETT_SAMPLEDELAY_CHAR_HANDLE;
+        break;
+    }
+    
+    Hvp.value.val = (uint8*)&value;
+    Hvp.value.actualLen = 2;
+    Hvp.value.len = 2;
+    
+    if (flags == CY_BLE_GATT_DB_PEER_INITIATED)
+    {
+        Cy_BLE_GATTS_WriteAttributeValuePeer(&appConnHandle,&Hvp);
+    } else {
+        Cy_BLE_GATTS_WriteAttributeValueLocal(&Hvp);
+        Cy_BLE_GATTS_SendNotification(&appConnHandle,&Hvp);
+    }
+    
+}
+

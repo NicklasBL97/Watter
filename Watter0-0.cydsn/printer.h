@@ -16,11 +16,14 @@
 #include "bleHandler.h"
 
 
-typedef struct SystemInfo{
+typedef struct SystemInfo_t{
     int16* effekt;
     int16* cadance;
     uint8* batterylvl;
-}SystemInfo;
+}SystemInfo_t;
+
+extern SemaphoreHandle_t printerSema;
 
 //Debug printing over SWD
 void printSystemInfo(void* info);
+void printer_init();

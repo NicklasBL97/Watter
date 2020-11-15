@@ -10,16 +10,30 @@
  * ========================================
 */
 #include "project.h"
+#include "adcsample.h"
+
+
 
 int main(void)
 {
     __enable_irq(); /* Enable global interrupts. */
-
-    /* Place your initialization/startup code here (e.g. MyInst_Start()) */
+    
+    char uartBuffer[256];
+    
+    UART_1_Start();
+  
+    ADC_1_Start();
+    ADC_1_StartConvert();
+    
+    UART_1_PutString("Hej");
 
     for(;;)
     {
         /* Place your application code here. */
+       initADCsample();
+       int sample = getADCsample();
+        
+        snprintf(uartBuffer, sizeof(uartBuffer), "Sample er: %i", sample);
     }
 }
 

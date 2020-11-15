@@ -2,16 +2,17 @@
 
 #include <stdio.h>
 #include "project.h"
+#include "adcsample.h"
 
 
 
-void initSample()
+void initADCsample()
 {
     ADC_1_Start();
     ADC_1_StartConvert();  
 }
 
-int getSample()
+int getADCsample()
 {
     
     int sample = 0;

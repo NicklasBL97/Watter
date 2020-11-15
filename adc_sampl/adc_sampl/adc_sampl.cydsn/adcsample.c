@@ -18,8 +18,8 @@ int getSample()
  
    // if (ADC_1_IsEndConversion(ADC_1_WAIT_FOR_RESULT))
     //{
-        uint16_t result = ADC_1_GetResult16();  
-        int16 spaending = ADC_1_CountsTo_mVolts(result);
+        uint16_t result = ADC_1_GetResult16(0);  
+        int16 spaending = ADC_1_CountsTo_mVolts(0, result);
         sample = spaending;
     //}
     

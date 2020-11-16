@@ -12,10 +12,13 @@
 #include "project.h"
 #include "stdio.h"
 #include <time.h>
-#include <cy_rtc.h>
+//#include "cy_pdl.h"
+//#include "cy_rtc.h"
 
+#define TIMER_PERIOD_MSEC   1U
 #define addrADXL (0x53)
 
+int16 counter = 0;
 int8 rbuff[2]; // Read buffer
 int8 wbuff[2]; // write buffer
 
@@ -75,6 +78,43 @@ uint8 readRegister(uint8 reg_addr)
     
     return rbuff[0];
 }
+void TimerInterruptHandler(void)
+{
+    /* Clear the terminal count interrupt */
+    Cy_TCPWM_ClearInterrupt(Timer_HW, Timer_CNT_NUM, CY_TCPWM_INT_ON_TC);
+    counter ++;
+    Cy_GPIO_Inv(RED_PORT,RED_NUM);
+}
+int16 RPS(float xData, float zData)
+{
+    int16 tempcount, tempcount2, tempcount3, tempcount4 = 0,RPS,revs,revs2,revs3,revs4;
+    int16 samlet = xData+zData;
+    while(zData != 0  &&  xData != 1)
+    {
+        tempcount = counter;
+        revs = tempcount4 - tempcount;
+    }
+    while(zData != -1  &&  xData != 0)
+    {
+        tempcount2 = counter;
+        revs2 = tempcount - tempcount2;
+    }
+    while(zData != 0  &&  xData != -1)
+    {
+        tempcount3 = counter;
+        revs3 = tempcount2 - tempcount3;
+    }
+    while(zData != 0  &&  xData != 1)
+    {
+        tempcount4 = counter;
+        revs4 = tempcount3 - tempcount4;
+    }
+    
+    RPS = (revs+revs2+revs3+revs4)/4;
+    
+    return RPS;
+}
+
 
 int main(void)
 {
@@ -83,6 +123,7 @@ int main(void)
     
     int8 xAxis[2], yAxis[2], zAxis[2];
     float xAxis2, yAxis2, zAxis2;
+    
     
     cy_en_scb_i2c_status_t initStatus;
     cy_en_sysint_status_t sysStatus;
@@ -102,13 +143,20 @@ int main(void)
     I2C_MasterSendStart(I2C_HW, CY_SCB_I2C_WRITE_XFER, 1);
     waitForOperation();
     
-    /* Enable global interrupts. */
-    __enable_irq(); 
+    Cy_SysInt_Init(&isrTimer_cfg, TimerInterruptHandler);
+    NVIC_EnableIRQ(isrTimer_cfg.intrSrc); /* Enable the core interrupt */
+    __enable_irq(); /* Enable global interrupts. */
     
     Cy_GPIO_Write(RED_PORT,RED_NUM,1);      // nulstiller RØD LED til debuging og advarsler.
     Cy_GPIO_Write(GREEN_PORT,GREEN_NUM,1);  // nulstiller GRØN LED til debuging og godkendelser.
     setvbuf ( stdin, NULL, _IONBF, 0 );
     setvbuf ( stdout, NULL, _IONBF, 0);
+    
+    (void)Cy_TCPWM_Counter_Init(Timer_HW, Timer_CNT_NUM, &Timer_config); 
+    Cy_TCPWM_Enable_Multiple(Timer_HW, Timer_CNT_MASK); /* Enable the counter instance */
+    
+    Cy_TCPWM_Counter_SetPeriod(Timer_HW, Timer_CNT_NUM, TIMER_PERIOD_MSEC - 1);
+    Cy_TCPWM_TriggerStart(Timer_HW, Timer_CNT_MASK); 
     
     // initialisering
     //Register 0x2C er BW-Rata som bestemmer båndbredden og data output rate. 
@@ -139,23 +187,18 @@ int main(void)
 
     for (;;)
     {
+        int16 rps;
         // Led sættes så de viser hvis vi oplever fejl
         Cy_GPIO_Write(GREEN_PORT,GREEN_NUM,0);
         Cy_GPIO_Write(RED_PORT,RED_NUM,1);
         
         I2C_MasterSendReStart(I2C_HW, CY_SCB_I2C_READ_XFER, 1);
-        CyDelay(10);
+        waitForOperation();
         // Her udregnes Xaxis
         xAxis[0] = readRegister(0x32);
         xAxis[1] = readRegister(0x33);
         xAxis2 = (xAxis[0] | xAxis[1] << 8);
         xAxis2 = xAxis2/256;
-        
-        // Her udregnes Yaxis
-        yAxis[0] = readRegister(0x34);
-        yAxis[1] = readRegister(0x35);
-        yAxis2 = (yAxis[0] | yAxis[1] << 8);
-        yAxis2 = yAxis2/256;
         
         // Her udregnes Zaxis
         zAxis[0] = readRegister(0x36);
@@ -163,11 +206,17 @@ int main(void)
         zAxis2 = (zAxis[0] | zAxis[1] << 8);
         zAxis2 = zAxis2/256;
         
+        // Her udregnes Yaxis
+//        yAxis[0] = readRegister(0x34);
+//        yAxis[1] = readRegister(0x35);
+//        yAxis2 = (yAxis[0] | yAxis[1] << 8);
+//        yAxis2 = yAxis2/256;
+//        
+        rps = RPS(xAxis2,zAxis2);
+        
         I2C_MasterSendStop(1);
-        CyDelay(25);
         // Her udskrives de tre Akser
-        printf("\tXA: %.1f \tYA: %.1f \tZA: %.1f   \r\n", xAxis2, yAxis2, zAxis2 );
-
+        printf(" \tRPS: %d ", rps);
     }
     return 0;
 }

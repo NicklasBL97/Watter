@@ -11,7 +11,7 @@
 */
 #ifndef CYAPICALLBACKS_H
 #define CYAPICALLBACKS_H
-    
+
 
 #if CY_CPU_CORTEX_M0P
     /*Define your Cortex-M0P macro callbacks here */

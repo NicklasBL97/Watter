@@ -37,13 +37,13 @@ void printSystemInfo(void* info){
         printf( "%c[H", ASCII_ESC );
         printf("System information about Watter:\n\n\r");
         printf("ConnectionState: %s", connState == NOT_CONNECTED ? "NOT CONNECTED\n\r" : "CONNECTED\n\r");
-        printf("Current power: %d\r\n",*sysinfo->effekt);
+        printf("Current power: %d\r\n",*(uint16*)(sysinfo->effekt));
         printf("Current cadance: %d\r\n",*sysinfo->cadance);
         printf("Current BatteryLevel: %d\r\n",*sysinfo->batterylvl);
         
         printf("\nEvents:\r\n");
         xSemaphoreGive(printerSema);
-        vTaskDelay(10000);
+        vTaskDelay(250);
     }
 }
 

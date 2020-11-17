@@ -7,17 +7,20 @@
   <Group key="DWRInstGuidMapping">
     <Group key="Interrupt">
       <Data key="7f0c977e-4d3d-4d77-a00d-aeb91b2dee2b/9260d369-b684-4310-b925-f618d77b89d7" value="UART_SCB_IRQ" />
+      <Data key="856fcae8-ad7e-4dd3-97fb-f0324acc9fbb" value="Sample_Int" />
       <Data key="af79a81c-6958-4293-9f68-4cdb29f3fd99/5e509665-5bd3-4115-bbc0-fb65a49def9a" value="BLE_bless_isr" />
       <Data key="c17649db-0a96-48ed-863a-a60b0471d6aa/76cc9645-f3bd-4d51-b91b-2975c83cdda3" value="ADC_1_IRQ" />
+      <Data key="caf9ec47-0c4a-46c7-b5b3-69d77a7a089b/76cc9645-f3bd-4d51-b91b-2975c83cdda3" value="ADC_IRQ" />
     </Group>
     <Group key="Pin">
       <Data key="2e69a61c-d56e-4096-98b6-39b3b8c8b83e" value="LED_CONN" />
       <Data key="6fd12cb2-2831-4639-b3b7-d6f7e5a15826" value="CH0_P" />
       <Data key="7f0c977e-4d3d-4d77-a00d-aeb91b2dee2b/65f3af6c-759b-4ccb-8c66-5c95ba1f5f4f" value="UART_tx" />
       <Data key="7f0c977e-4d3d-4d77-a00d-aeb91b2dee2b/b7e8018e-1ef7-49c0-b5a5-61641a03e31c" value="UART_rx" />
+      <Data key="9a495561-ceec-4112-80ec-df527830d2ab" value="V_BATT" />
       <Data key="65a50b98-2a76-4724-ab2b-aaaeb5eacffb" value="CH1_P" />
       <Data key="195a1406-1a61-4624-8f8e-84e6a42e4505" value="CH1_N" />
-      <Data key="0113321b-4a37-46f6-8407-2f8646c68756" value="CH0_N" />
+      <Data key="0113321b-4a37-46f6-8407-2f8646c68756" value="V_INST_AMP" />
       <Data key="a61270bc-07ec-447d-ac9e-34cfe85c30e9" value="LED_ADV" />
     </Group>
   </Group>
@@ -39,6 +42,13 @@
         <Data key="Assigned" value="False" />
         <Data key="Priority" value="Default" />
         <Data key="Vector" value="-1" />
+      </Group>
+    </Group>
+    <Group key="caf9ec47-0c4a-46c7-b5b3-69d77a7a089b/76cc9645-f3bd-4d51-b91b-2975c83cdda3">
+      <Group key="CortexM0p">
+        <Data key="Assigned" value="False" />
+        <Data key="Priority" value="Default" />
+        <Data key="Vector" value="8" />
       </Group>
     </Group>
   </Group>
@@ -639,6 +649,16 @@
     <Group key="7f0c977e-4d3d-4d77-a00d-aeb91b2dee2b/b7e8018e-1ef7-49c0-b5a5-61641a03e31c">
       <Group key="0">
         <Data key="Port Format" value="5,0" />
+      </Group>
+    </Group>
+    <Group key="9a495561-ceec-4112-80ec-df527830d2ab">
+      <Group key="0">
+        <Data key="Port Format" value="10,4" />
+      </Group>
+    </Group>
+    <Group key="0113321b-4a37-46f6-8407-2f8646c68756">
+      <Group key="0">
+        <Data key="Port Format" value="10,3" />
       </Group>
     </Group>
     <Group key="a61270bc-07ec-447d-ac9e-34cfe85c30e9">

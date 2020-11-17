@@ -12,13 +12,14 @@
 #include "project.h"
 #include "stdio.h"
 #include <time.h>
+#include <math.h>
 //#include "cy_pdl.h"
 //#include "cy_rtc.h"
 
 #define TIMER_PERIOD_MSEC   1U
 #define addrADXL (0x53)
 
-int16 counter = 0;
+uint16 counter = 0;
 int8 rbuff[2]; // Read buffer
 int8 wbuff[2]; // write buffer
 
@@ -115,6 +116,27 @@ int16 RPS(float xData, float zData)
     return RPS;
 }
 
+float deltaAxis2Deg(float xData1,float yData1, float zData1, 
+                    float xData2, float yData2, float zData2)
+{
+    // Beregner vinklen i grader, mellem 2 accelerometer
+    // målinger. Testet og virker i visual studio.
+    
+    // 3D pythagoras
+    float ZXY1 = sqrt((pow(xData1,2)+pow(yData1,2)+pow(zData1,2)));
+    float ZXY2 = sqrt((pow(xData2,2)+pow(yData2,2)+pow(zData2,2)));
+   
+    // "acos( ( X1*X2 + Y1*Y2 + Z1*Z2 ) /  ZXY1 * ZXY2)" ...
+    // ... giver vinklen mellem de 2 punkter i radianer.
+    
+    // Det ganges med 180/pi for at omregne til deg.
+	float vinkelRad = acos(((xData1 * xData2) + (yData1 * yData2) + (zData1 * zData2)) / (ZXY1 * ZXY2));
+	float vinkelDeg = vinkelRad * (180.0 / M_PI);
+	
+    return vinkelDeg;
+}
+
+
 
 int main(void)
 {
@@ -184,39 +206,77 @@ int main(void)
     // stop transmission
     I2C_MasterSendStop(1);
     CyDelay(10);
+    
+    // test variable
+    uint16 grader = 0;
+    uint16 antalomgange = 0;
+    
+    // Brugt til beregning af graders drejning
+    // Giver x,y,zAxis[] start værdier
+    int16 xAxis_p1p2[2]={0,0},yAxis_p1p2[2]={0,0},zAxis_p1p2[2]={1,1};
+    
 
+    
+
+    int16 rps;
     for (;;)
     {
-        int16 rps;
+
         // Led sættes så de viser hvis vi oplever fejl
         Cy_GPIO_Write(GREEN_PORT,GREEN_NUM,0);
         Cy_GPIO_Write(RED_PORT,RED_NUM,1);
         
         I2C_MasterSendReStart(I2C_HW, CY_SCB_I2C_READ_XFER, 1);
         waitForOperation();
+        
+        
         // Her udregnes Xaxis
         xAxis[0] = readRegister(0x32);
         xAxis[1] = readRegister(0x33);
         xAxis2 = (xAxis[0] | xAxis[1] << 8);
         xAxis2 = xAxis2/256;
+        xAxis_p1p2[0]=xAxis2;
         
         // Her udregnes Zaxis
         zAxis[0] = readRegister(0x36);
         zAxis[1] = readRegister(0x37);
         zAxis2 = (zAxis[0] | zAxis[1] << 8);
         zAxis2 = zAxis2/256;
+        zAxis_p1p2[0]=zAxis2;
         
         // Her udregnes Yaxis
-//        yAxis[0] = readRegister(0x34);
-//        yAxis[1] = readRegister(0x35);
-//        yAxis2 = (yAxis[0] | yAxis[1] << 8);
-//        yAxis2 = yAxis2/256;
-//        
-        rps = RPS(xAxis2,zAxis2);
+        yAxis[0] = readRegister(0x34);
+        yAxis[1] = readRegister(0x35);
+        yAxis2 = (yAxis[0] | yAxis[1] << 8);
+        yAxis2 = yAxis2/256;
+        yAxis_p1p2[0]=yAxis2;
+
+    //  rps = RPS(xAxis2,zAxis2);
+        
+        // Grader drejet = antal grader allerede drejet + nyt antal grader.
+        grader += deltaAxis2Deg(xAxis_p1p2[0],yAxis_p1p2[0],zAxis_p1p2[0],
+                        xAxis_p1p2[1],yAxis_p1p2[1],zAxis_p1p2[1]);
+        
+        // for at tælle antal omgange
+        if(grader>360)
+        {
+            
+            antalomgange++;
+            grader = grader-360;
+        }
+        
+        // Rykker data en plads i arrayet
+        // så der kan samles et nyt punkt. P1 = P0, P0 = ny værdi næste omgang i loop.
+        xAxis_p1p2[1]=xAxis_p1p2[0];
+        yAxis_p1p2[1]=yAxis_p1p2[0];
+        zAxis_p1p2[1]=zAxis_p1p2[0];
+            
+
         
         I2C_MasterSendStop(1);
         // Her udskrives de tre Akser
-        printf(" \tRPS: %d ", rps);
+        printf("Antal grader drejet:\t%d \n", grader);
+        printf("Antal omgange:\t%d \n", antalomgange);
     }
     return 0;
 }

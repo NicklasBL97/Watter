@@ -9,10 +9,13 @@
  *
  * ========================================
 */
-#include "project.h"
 
-//static void startUp(uint8);
-//static void calibration();
+#ifndef adcsample_h
 
+#define adcsample_h
 
+void initADCsample();
+int getADCsample();
+
+#endif
 /* [] END OF FILE */

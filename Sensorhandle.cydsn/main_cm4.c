@@ -136,8 +136,6 @@ float deltaAxis2Deg(float xData1,float yData1, float zData1,
     return vinkelDeg;
 }
 
-
-
 int main(void)
 {
     UART_Start();
@@ -209,13 +207,12 @@ int main(void)
     
     // test variable
     uint16 grader = 0;
+    uint16 totalGrader =0;
     uint16 antalomgange = 0;
     
     // Brugt til beregning af graders drejning
     // Giver x,y,zAxis[] start værdier
-    int16 xAxis_p1p2[2]={0,0},yAxis_p1p2[2]={0,0},zAxis_p1p2[2]={1,1};
-    
-
+    float xAxis_p1p2[2]={0,0},yAxis_p1p2[2]={0,0},zAxis_p1p2[2]={1,1};
     
 
     int16 rps;
@@ -224,7 +221,7 @@ int main(void)
 
         // Led sættes så de viser hvis vi oplever fejl
         Cy_GPIO_Write(GREEN_PORT,GREEN_NUM,0);
-        Cy_GPIO_Write(RED_PORT,RED_NUM,1);
+        //Cy_GPIO_Write(RED_PORT,RED_NUM,1);
         
         I2C_MasterSendReStart(I2C_HW, CY_SCB_I2C_READ_XFER, 1);
         waitForOperation();
@@ -234,31 +231,34 @@ int main(void)
         xAxis[0] = readRegister(0x32);
         xAxis[1] = readRegister(0x33);
         xAxis2 = (xAxis[0] | xAxis[1] << 8);
-        xAxis2 = xAxis2/256;
+        //xAxis2 = xAxis2/256;
         xAxis_p1p2[0]=xAxis2;
         
         // Her udregnes Zaxis
         zAxis[0] = readRegister(0x36);
         zAxis[1] = readRegister(0x37);
         zAxis2 = (zAxis[0] | zAxis[1] << 8);
-        zAxis2 = zAxis2/256;
+        //zAxis2 = zAxis2/256;
         zAxis_p1p2[0]=zAxis2;
         
         // Her udregnes Yaxis
         yAxis[0] = readRegister(0x34);
         yAxis[1] = readRegister(0x35);
         yAxis2 = (yAxis[0] | yAxis[1] << 8);
-        yAxis2 = yAxis2/256;
+        //yAxis2 = yAxis2/256;
         yAxis_p1p2[0]=yAxis2;
 
     //  rps = RPS(xAxis2,zAxis2);
         
+        CyDelay(10);
         // Grader drejet = antal grader allerede drejet + nyt antal grader.
-        grader += deltaAxis2Deg(xAxis_p1p2[0],yAxis_p1p2[0],zAxis_p1p2[0],
+        grader = deltaAxis2Deg(xAxis_p1p2[0],yAxis_p1p2[0],zAxis_p1p2[0],
                         xAxis_p1p2[1],yAxis_p1p2[1],zAxis_p1p2[1]);
         
+        totalGrader = grader;
+        
         // for at tælle antal omgange
-        if(grader>360)
+        if(grader>=360)
         {
             
             antalomgange++;
@@ -275,8 +275,8 @@ int main(void)
         
         I2C_MasterSendStop(1);
         // Her udskrives de tre Akser
-        printf("Antal grader drejet:\t%d \n", grader);
-        printf("Antal omgange:\t%d \n", antalomgange);
+        printf("Antal grader drejet:\t%d", totalGrader);
+        printf("Antal omgange:\t%d \r\n", antalomgange);
     }
     return 0;
 }

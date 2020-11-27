@@ -10,9 +10,10 @@
  * ========================================
 */
 #include "project.h"
+#include "my_I2C.h"
+#include <math.h>
 
-//static void startUp(uint8);
-//static void calibration();
-
+void initialisering();
+float deltaAxis2Deg(float xData1,float yData1, float zData1, float xData2, float yData2, float zData2);
 
 /* [] END OF FILE */

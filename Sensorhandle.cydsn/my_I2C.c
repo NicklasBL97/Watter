@@ -8,7 +8,7 @@
  * WHICH IS THE PROPERTY OF your company.
  *
  * ========================================
-*
+*/
 #include "my_I2C.h"
 
 static uint8 rbuff[2]; // Read buffer
@@ -20,22 +20,29 @@ void waitForOperation()
 {
     while(0 != (I2C_MasterGetStatus() &CY_SCB_I2C_MASTER_BUSY))
     {
-        CyDelayUs(1); // venter på at status ikk er busy mere.
+        CyDelayUs(3); // venter på at status ikk er busy mere.
     }
+    return;
 }
 
+void handleError(uint8 x)
+{
+    Cy_GPIO_Write(RED_PORT,RED_NUM,0);
+    Cy_GPIO_Write(GREEN_PORT,GREEN_NUM,1);
+    printf(" error %d \r\n ", x);
+}
 //for at skrive til et register vil vi gerne skrive to værdier. 
 // En addresse og en indstilling i form af data.
 
-void writeRegister(uint8 reg_addr, uint8 data)
+void writeRegister(uint8 reg_addr, int8 data)
 {
     wbuff[0] = reg_addr;    //tildel det første element til register addressen.
     wbuff[1] = data;        //tildel det andet element til den data værdi som vi gerne vil bruge til at indstille registeret.
     
+    register_setting.slaveAddress = addrADXL;
     register_setting.buffer = wbuff;
     register_setting.bufferSize = 2;
     register_setting.xferPending = false;
-    
     I2C_MasterWrite(&register_setting);
     waitForOperation();
 }
@@ -46,6 +53,7 @@ uint8 readRegister(uint8 reg_addr)
 {
     wbuff[0] = reg_addr;
     
+    register_setting.slaveAddress = addrADXL;
     register_setting.buffer = wbuff;
     register_setting.bufferSize = 1;
     register_setting.xferPending = true;
@@ -61,5 +69,4 @@ uint8 readRegister(uint8 reg_addr)
     
     return rbuff[0];
 }
-
-* [] END OF FILE */
+/* [] END OF FILE */

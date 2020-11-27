@@ -8,12 +8,13 @@
  * WHICH IS THE PROPERTY OF your company.
  *
  * ========================================
-*
+*/
 #pragma once
 #include "project.h"
+#define addrADXL (0x53)
 
 void waitForOperation();
-void writeRegister(uint8, uint8);
+void writeRegister(uint8, int8);
 uint8 readRegister(uint8);
 
-* [] END OF FILE */
+/* [] END OF FILE */

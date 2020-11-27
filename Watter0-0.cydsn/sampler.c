@@ -12,7 +12,7 @@ void task_sampler(void* arg){
     while(1){
         
         xSemaphoreTake(*(parameter->mutex),0);
-        (*(parameter->power))++;
+        //(*(parameter->power))++;
         (*(parameter->cadance))+= 2;
         xSemaphoreGive(*(parameter->mutex));
         vTaskDelay(parameter->delay);   
@@ -20,6 +20,8 @@ void task_sampler(void* arg){
 }
 
 void sampler_init(){
+    
+    
     samples.power = &sendEffectInfo.power;
     samples.cadance = &sendEffectInfo.cadance;
     samples.delay = 50;

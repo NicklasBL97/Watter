@@ -44,9 +44,7 @@ void genericEventHandler(uint32 event, void* eventParameter){
     {
         case CY_BLE_EVT_STACK_ON:
         case CY_BLE_EVT_GAP_DEVICE_DISCONNECTED:
-            xSemaphoreTake(printerSema,portMAX_DELAY);
-            printf("CY_BLE_EVT_GAP_DEVICE_DISCONNECTED\r\n");
-            xSemaphoreGive(printerSema);
+            LOG("CY_BLE_EVT_GAP_DEVICE_DISCONNECTED\r\n");
             Cy_GPIO_Write(LED_ADV_PORT,LED_ADV_NUM,LED_ON);
             Cy_GPIO_Write(LED_CONN_PORT,LED_CONN_NUM,LED_OFF);
             connState = NOT_CONNECTED;
@@ -54,9 +52,7 @@ void genericEventHandler(uint32 event, void* eventParameter){
         break;
             
         case CY_BLE_EVT_GATT_CONNECT_IND:
-            xSemaphoreTake(printerSema,portMAX_DELAY);
-            printf("CY_BLE_EVT_GATT_CONNECT_IND\r\n");
-            xSemaphoreGive(printerSema);
+            LOG("CY_BLE_EVT_GATT_CONNECT_IND\r\n");
             
             setConnectionHandle(&appConnHandle,eventParameter);
             connState = CONNECTED;
@@ -89,9 +85,10 @@ void genericEventHandler(uint32 event, void* eventParameter){
         break;
             
         case CY_BLE_EVT_GATTS_INDICATION_ENABLED:
-            xSemaphoreTake(printerSema,portMAX_DELAY);
-            printf("CY_BLE_EVT_GATTS_INDICATION_ENABLED\n\r");
-            xSemaphoreGive(printerSema);
+            LOG("CY_BLE_EVT_GATTS_INDICATION_ENABLED\n\r");
+//            xSemaphoreTake(printerSema,portMAX_DELAY);
+//            printf("CY_BLE_EVT_GATTS_INDICATION_ENABLED\n\r");
+//            xSemaphoreGive(printerSema);
             
         break;
             
@@ -100,9 +97,7 @@ void genericEventHandler(uint32 event, void* eventParameter){
         break;
             
         case CY_BLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ:
-            xSemaphoreTake(printerSema,portMAX_DELAY);
-            printf("CY_BLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ: handle: %x \r\n", ((cy_stc_ble_gatts_char_val_read_req_t *)eventParameter)->attrHandle);
-            xSemaphoreGive(printerSema);
+            LOG("CY_BLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ: handle: %x \r\n", ((cy_stc_ble_gatts_char_val_read_req_t *)eventParameter)->attrHandle);
             
         break;
         

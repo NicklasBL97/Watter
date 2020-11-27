@@ -66,7 +66,6 @@ int main(void)
     I2C_Start();
     ADXL345Init();
     
-    
     systemInformation.effekt = &sendEffectInfo.power;
     systemInformation.cadance = &sendEffectInfo.cadance;
     systemInformation.batterylvl = &batterylvl;
@@ -85,6 +84,8 @@ int main(void)
     //ADC_IRQ_Enable();
     ADC_StartConvert();
     UART_Start();
+    
+
     
     Cy_TCPWM_Counter_Init(Timer_Cad_Sample_HW, Timer_Cad_Sample_CNT_NUM,&Timer_Cad_Sample_config);
     Cy_TCPWM_Enable_Multiple(Timer_Cad_Sample_HW, Timer_Cad_Sample_CNT_MASK);

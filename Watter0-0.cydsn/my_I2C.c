@@ -19,10 +19,13 @@ static cy_stc_scb_i2c_master_xfer_config_t register_setting;
 
 void waitForOperation()
 {
-    while(0 != (I2C_MasterGetStatus() &CY_SCB_I2C_MASTER_BUSY))
+    /*
+    uint32_t status = I2C_MasterGetStatus();
+    if(0 != (status &CY_SCB_I2C_MASTER_BUSY))
     {
+        LOG("fejl i masterGetStatus");
         CyDelayUs(3); // venter på at status ikk er busy mere.
-    }
+    }*/
     return;
 }
 

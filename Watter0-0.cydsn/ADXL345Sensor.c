@@ -14,9 +14,11 @@
 #include <math.h>
 #include "my_I2C.h"
 
+ADXL345I2CData I2CData;
+
 void ADXL345Init()
 {
-    I2C_MasterSendStart(I2C_HW, CY_SCB_I2C_WRITE_XFER, 1);
+    I2C_MasterSendStart(0b1010011, CY_SCB_I2C_WRITE_XFER, 1);
     waitForOperation();
     
     cy_en_scb_i2c_status_t initStatus;
@@ -83,9 +85,7 @@ float deltaAxis2Deg(float xData1,float yData1, float zData1,
 }
 
 ADXL345Data ADXL345GetData(){
-    ADXL345I2CData I2CData;
-    
-    I2C_MasterSendReStart(I2C_HW, CY_SCB_I2C_READ_XFER, 1);
+    I2C_MasterSendReStart(0b01010011, CY_SCB_I2C_READ_XFER, 1);
         waitForOperation();
         
     I2CData.x[0] = readRegister(0x32);

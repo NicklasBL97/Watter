@@ -18,6 +18,8 @@
     </Group>
     <Group key="Pin">
       <Data key="2e69a61c-d56e-4096-98b6-39b3b8c8b83e" value="LED_CONN" />
+      <Data key="3bebfee8-790b-4297-b73a-27818bdce71c" value="SCL" />
+      <Data key="3fa86638-535f-41b6-9fe9-759dfaee78a5" value="SDA" />
       <Data key="6fd12cb2-2831-4639-b3b7-d6f7e5a15826" value="CH0_P" />
       <Data key="7f0c977e-4d3d-4d77-a00d-aeb91b2dee2b/65f3af6c-759b-4ccb-8c66-5c95ba1f5f4f" value="UART_tx" />
       <Data key="7f0c977e-4d3d-4d77-a00d-aeb91b2dee2b/b7e8018e-1ef7-49c0-b5a5-61641a03e31c" value="UART_rx" />
@@ -27,7 +29,7 @@
       <Data key="678c6d19-d024-4100-8189-890c4e3b36f2/2aab8a93-e7dd-4bd4-8210-42652cd079c5" value="I2C_sda" />
       <Data key="678c6d19-d024-4100-8189-890c4e3b36f2/69c3b5e8-b094-4d65-b96b-9f4f3a9a8641" value="I2C_scl" />
       <Data key="0113321b-4a37-46f6-8407-2f8646c68756" value="V_INST_AMP" />
-      <Data key="a61270bc-07ec-447d-ac9e-34cfe85c30e9" value="LED_ADV" />
+      <Data key="a61270bc-07ec-447d-ac9e-34cfe85c30e9" value="LED_ERROR" />
     </Group>
   </Group>
   <Group key="Interrupt">
@@ -694,6 +696,16 @@
     <Group key="2e69a61c-d56e-4096-98b6-39b3b8c8b83e">
       <Group key="0">
         <Data key="Port Format" value="7,1" />
+      </Group>
+    </Group>
+    <Group key="3bebfee8-790b-4297-b73a-27818bdce71c">
+      <Group key="0">
+        <Data key="Port Format" value="6,4" />
+      </Group>
+    </Group>
+    <Group key="3fa86638-535f-41b6-9fe9-759dfaee78a5">
+      <Group key="0">
+        <Data key="Port Format" value="6,5" />
       </Group>
     </Group>
     <Group key="7f0c977e-4d3d-4d77-a00d-aeb91b2dee2b/65f3af6c-759b-4ccb-8c66-5c95ba1f5f4f">

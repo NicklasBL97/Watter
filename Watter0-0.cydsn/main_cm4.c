@@ -16,6 +16,8 @@
 #include "semphr.h"
 #include "queue.h"
 #include "limits.h"
+#include "my_I2C.h"
+#include "ADXL345Sensor.h"
 
 #define ARM_MATH_CM4
 #include "arm_math.h"
@@ -29,6 +31,8 @@
 int16 dst;
 uint8 batterylvl = 100;
 SystemInfo_t systemInformation;
+ADXL345Data accelerometerData;
+
 
 void ADC_ISR_Callback(void){
 
@@ -42,13 +46,12 @@ typedef struct AccelerometerData{
     int16 z;
 }AccelerometerData;
 
-uint32 Timer_Count2ms(uint32 count, uint32 fclk){
-    return 1000 * (float)count/(float)fclk;
-}
+//uint32 Timer_Count2ms(uint32 count, uint32 fclk){
+//    return 1000 * (float)count/(float)fclk;
+//}
 
 void Cad_ISR_Callback(void){
-
-    uint32 time = Timer_Count2ms(Timer_Cad_Sample_GetCounter(),1000000);
+    accelerometerData = ADXL345GetData();
 }
 
 int main(void)
@@ -60,9 +63,14 @@ int main(void)
     sampler_init();
     printer_init();
     
+    I2C_Start();
+    ADXL345Init();
+    
+    
     systemInformation.effekt = &sendEffectInfo.power;
     systemInformation.cadance = &sendEffectInfo.cadance;
     systemInformation.batterylvl = &batterylvl;
+    systemInformation.accData = &accelerometerData;
     
     __enable_irq();
     Cy_SysInt_Init(&Sample_Int_cfg,ADC_ISR_Callback); 

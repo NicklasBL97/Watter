@@ -20,9 +20,7 @@
 #include "limits.h"
 #include "bleHandler.h"
 #include "sampler.h"
-
-#define LED_ON 0
-#define LED_OFF 1
+#include "watUtility.h"
 
 #define CPS_CP_RESP_LENGTH                          (0u)
 #define CPS_CP_RESP_OP_CODES                        (1u)
@@ -33,10 +31,11 @@
 
 static cy_stc_ble_conn_handle_t appConnHandle;
 static SemaphoreHandle_t bleSemaphore;
+SemaphoreHandle_t powerMutex;
+
 CONNECTIONSTATE connState = NOT_CONNECTED;
 
 SendEffekt_t sendEffectInfo;
-SemaphoreHandle_t powerMutex;
 
 void genericEventHandler(uint32 event, void* eventParameter){
     //printf("Event: 0x%x\n\r",event);
@@ -45,7 +44,6 @@ void genericEventHandler(uint32 event, void* eventParameter){
         case CY_BLE_EVT_STACK_ON:
         case CY_BLE_EVT_GAP_DEVICE_DISCONNECTED:
             LOG("CY_BLE_EVT_GAP_DEVICE_DISCONNECTED\r\n");
-            Cy_GPIO_Write(LED_ADV_PORT,LED_ADV_NUM,LED_ON);
             Cy_GPIO_Write(LED_CONN_PORT,LED_CONN_NUM,LED_OFF);
             connState = NOT_CONNECTED;
             Cy_BLE_GAPP_StartAdvertisement(CY_BLE_ADVERTISING_FAST,CY_BLE_PERIPHERAL_CONFIGURATION_0_INDEX);
@@ -57,7 +55,6 @@ void genericEventHandler(uint32 event, void* eventParameter){
             setConnectionHandle(&appConnHandle,eventParameter);
             connState = CONNECTED;
             Cy_GPIO_Write(LED_CONN_PORT,LED_CONN_NUM,LED_ON);
-            Cy_GPIO_Write(LED_ADV_PORT,LED_ADV_NUM,LED_OFF);
         break;
         
         case CY_BLE_EVT_GATTS_WRITE_REQ:
@@ -151,9 +148,8 @@ void task_SendEffekt(void* arg){
     
     while(1){
         uint16_t cccd = CY_BLE_CCCD_DEFAULT;
-        Cy_BLE_CPSS_GetCharacteristicDescriptor(appConnHandle, CY_BLE_CPS_POWER_MEASURE, CY_BLE_CPS_CCCD, CY_BLE_CCCD_LEN, (uint8_t*)&cccd);
-          
-        if(cccd == CY_BLE_CCCD_NOTIFICATION)
+
+        if(CPSNotificationsOn(appConnHandle,cccd))
         {
             
             SendEffekt_t e;
@@ -163,7 +159,7 @@ void task_SendEffekt(void* arg){
             e.flags |= CY_BLE_CPS_CPM_CRANK_BIT;
             uint8_t powerMeasureData[CY_BLE_GATT_DEFAULT_MTU - 3];
             uint8_t length = 0;
-        
+            
             Cy_BLE_Set16ByPtr(powerMeasureData, e.flags);
             length += sizeof(e.flags);
             Cy_BLE_Set16ByPtr(powerMeasureData + length, e.power);

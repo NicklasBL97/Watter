@@ -14,12 +14,14 @@
 #pragma once
 #include "project.h"
 #include "bleHandler.h"
-
+#include "stdio.h"
+#include "ADXL345Sensor.h"
 
 typedef struct SystemInfo_t{
     int16* effekt;
     int16* cadance;
     uint8* batterylvl;
+    ADXL345Data* accData;
 }SystemInfo_t;
 
 extern SemaphoreHandle_t printerSema;

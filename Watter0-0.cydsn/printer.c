@@ -13,7 +13,6 @@
 /* [] END OF FILE */
 #include "project.h"
 #include "printer.h"
-#include "stdio.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
@@ -40,6 +39,9 @@ void printSystemInfo(void* info){
         printf("Current power: %d\r\n",*(sysinfo->effekt));
         printf("Current cadance: %d\r\n",*sysinfo->cadance);
         printf("Current BatteryLevel: %d\r\n",*sysinfo->batterylvl);
+        printf("\tX: %d", sysinfo->accData->x);
+        printf("\tY: %d", sysinfo->accData->y);
+        printf("\tZ: %d\r\n", sysinfo->accData->z);
         
         printf("\nEvents:\r\n");
         xSemaphoreGive(printerSema);

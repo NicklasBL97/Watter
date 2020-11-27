@@ -29,10 +29,9 @@ void waitForOperation()
 {
     while(0 != (I2C_MasterGetStatus() &CY_SCB_I2C_MASTER_BUSY))
     {
-        CyDelayUs(1); // venter på at status ikk er busy mere.
+        CyDelayUs(3); // venter på at status ikk er busy mere.
     }
     return;
-    
 }
 
 void handleError(uint8 x)
@@ -84,8 +83,12 @@ void TimerInterruptHandler(void)
     /* Clear the terminal count interrupt */
     Cy_TCPWM_ClearInterrupt(Timer_HW, Timer_CNT_NUM, CY_TCPWM_INT_ON_TC);
     counter ++;
-    Cy_GPIO_Inv(RED_PORT,RED_NUM);
+    //Cy_GPIO_Inv(RED_PORT,RED_NUM);
 }
+
+// Funktion der ikke bliver brugt. 
+ 
+/*
 int16 RPS(float xData, float zData)
 {
     int16 tempcount, tempcount2, tempcount3, tempcount4 = 0,RPS,revs,revs2,revs3,revs4;
@@ -115,7 +118,7 @@ int16 RPS(float xData, float zData)
     
     return RPS;
 }
-
+*/
 float deltaAxis2Deg(float xData1,float yData1, float zData1, 
                     float xData2, float yData2, float zData2)
 {
@@ -143,7 +146,6 @@ int main(void)
     
     int8 xAxis[2], yAxis[2], zAxis[2];
     float xAxis2, yAxis2, zAxis2;
-    
     
     cy_en_scb_i2c_status_t initStatus;
     cy_en_sysint_status_t sysStatus;
@@ -180,7 +182,7 @@ int main(void)
     
     // initialisering
     //Register 0x2C er BW-Rata som bestemmer båndbredden og data output rate. 
-    writeRegister(0x2C,6);
+    writeRegister(0x2C,4);
     waitForOperation();
     //Register 0x2D er Power control som bestemmer hvilket mode den er i f.eks (sleep mode eller measure mode). 
     writeRegister(0x2D, 8);
@@ -194,9 +196,9 @@ int main(void)
     
     // Calibration
     // X-Axis
-    writeRegister(0x1E,2);
+    writeRegister(0x1E,0);
     // Y-Axis 
-    writeRegister(0x1F,1);
+    writeRegister(0x1F,0);
     // Z-Axis
     writeRegister(0x20,13);
     
@@ -213,7 +215,6 @@ int main(void)
     // Brugt til beregning af graders drejning
     // Giver x,y,zAxis[] start værdier
     float xAxis_p1p2[2]={0,0},yAxis_p1p2[2]={0,0},zAxis_p1p2[2]={1,1};
-    
 
     int16 rps;
     for (;;)
@@ -221,7 +222,7 @@ int main(void)
 
         // Led sættes så de viser hvis vi oplever fejl
         Cy_GPIO_Write(GREEN_PORT,GREEN_NUM,0);
-        //Cy_GPIO_Write(RED_PORT,RED_NUM,1);
+        Cy_GPIO_Write(RED_PORT,RED_NUM,1);
         
         I2C_MasterSendReStart(I2C_HW, CY_SCB_I2C_READ_XFER, 1);
         waitForOperation();
@@ -231,38 +232,36 @@ int main(void)
         xAxis[0] = readRegister(0x32);
         xAxis[1] = readRegister(0x33);
         xAxis2 = (xAxis[0] | xAxis[1] << 8);
-        //xAxis2 = xAxis2/256;
+        xAxis2 = xAxis2/256;
         xAxis_p1p2[0]=xAxis2;
         
         // Her udregnes Zaxis
         zAxis[0] = readRegister(0x36);
         zAxis[1] = readRegister(0x37);
         zAxis2 = (zAxis[0] | zAxis[1] << 8);
-        //zAxis2 = zAxis2/256;
+        zAxis2 = zAxis2/256;
         zAxis_p1p2[0]=zAxis2;
         
         // Her udregnes Yaxis
         yAxis[0] = readRegister(0x34);
         yAxis[1] = readRegister(0x35);
         yAxis2 = (yAxis[0] | yAxis[1] << 8);
-        //yAxis2 = yAxis2/256;
+        yAxis2 = yAxis2/256;
         yAxis_p1p2[0]=yAxis2;
-
-    //  rps = RPS(xAxis2,zAxis2);
+        waitForOperation();
+        //rps = RPS(xAxis2,zAxis2);
         
         CyDelay(10);
         // Grader drejet = antal grader allerede drejet + nyt antal grader.
         grader = deltaAxis2Deg(xAxis_p1p2[0],yAxis_p1p2[0],zAxis_p1p2[0],
                         xAxis_p1p2[1],yAxis_p1p2[1],zAxis_p1p2[1]);
-        
-        totalGrader = grader;
+        totalGrader += grader;
         
         // for at tælle antal omgange
-        if(grader>=360)
+        if(totalGrader>=360)
         {
-            
             antalomgange++;
-            grader = grader-360;
+            totalGrader = 0;
         }
         
         // Rykker data en plads i arrayet
@@ -270,16 +269,15 @@ int main(void)
         xAxis_p1p2[1]=xAxis_p1p2[0];
         yAxis_p1p2[1]=yAxis_p1p2[0];
         zAxis_p1p2[1]=zAxis_p1p2[0];
-            
-
         
         I2C_MasterSendStop(1);
         // Her udskrives de tre Akser
+        //printf("\t Xa: %.1f \tYa: %.1f \tZa: %.1f \r\n", xAxis2, yAxis2, zAxis2);
+        
+        // Her udskrives antal grader drejet og antal omgange
         printf("Antal grader drejet:\t%d", totalGrader);
-        printf("Antal omgange:\t%d \r\n", antalomgange);
+        printf("\tAntal omgange:\t%d \r\n", antalomgange);
     }
     return 0;
 }
-
-
 /* [] END OF FILE */

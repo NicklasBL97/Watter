@@ -24,6 +24,12 @@ typedef struct SystemInfo_t{
 
 extern SemaphoreHandle_t printerSema;
 
+#define LOG(...) do { \
+    xSemaphoreTake(printerSema,portMAX_DELAY); \
+    printf(__VA_ARGS__);   \
+    xSemaphoreGive(printerSema); \
+} while(0)
+
 //Debug printing over SWD
 void printSystemInfo(void* info);
 void printer_init();

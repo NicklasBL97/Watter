@@ -21,13 +21,13 @@
 #include "bleHandler.h"
 
 #define ASCII_ESC 27
+
+
 SemaphoreHandle_t printerSema;
 
 void printSystemInfo(void* info){
     
-    xSemaphoreTake(printerSema,portMAX_DELAY);
-    printf("starting printSystemInfo\n\r");
-    xSemaphoreGive(printerSema);
+    LOG("starting printSystemInfo\n\r");
     
     SystemInfo_t* sysinfo = (SystemInfo_t*)info;
     
@@ -37,13 +37,13 @@ void printSystemInfo(void* info){
         printf( "%c[H", ASCII_ESC );
         printf("System information about Watter:\n\n\r");
         printf("ConnectionState: %s", connState == NOT_CONNECTED ? "NOT CONNECTED\n\r" : "CONNECTED\n\r");
-        printf("Current power: %d\r\n",*(uint16*)(sysinfo->effekt));
+        printf("Current power: %d\r\n",*(sysinfo->effekt));
         printf("Current cadance: %d\r\n",*sysinfo->cadance);
         printf("Current BatteryLevel: %d\r\n",*sysinfo->batterylvl);
         
         printf("\nEvents:\r\n");
         xSemaphoreGive(printerSema);
-        vTaskDelay(250);
+        vTaskDelay(1000);
     }
 }
 

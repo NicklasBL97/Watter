@@ -30,40 +30,6 @@ void TimerInterruptHandler(void)
     //Cy_GPIO_Inv(RED_PORT,RED_NUM);
 }
 
-// Funktion der ikke bliver brugt. 
- 
-/*
-int16 RPS(float xData, float zData)
-{
-    int16 tempcount, tempcount2, tempcount3, tempcount4 = 0,RPS,revs,revs2,revs3,revs4;
-    int16 samlet = xData+zData;
-    while(zData != 0  &&  xData != 1)
-    {
-        tempcount = counter;
-        revs = tempcount4 - tempcount;
-    }
-    while(zData != -1  &&  xData != 0)
-    {
-        tempcount2 = counter;
-        revs2 = tempcount - tempcount2;
-    }
-    while(zData != 0  &&  xData != -1)
-    {
-        tempcount3 = counter;
-        revs3 = tempcount2 - tempcount3;
-    }
-    while(zData != 0  &&  xData != 1)
-    {
-        tempcount4 = counter;
-        revs4 = tempcount3 - tempcount4;
-    }
-    
-    RPS = (revs+revs2+revs3+revs4)/4;
-    
-    return RPS;
-}
-*/
-
 int main(void)
 {
     UART_Start();

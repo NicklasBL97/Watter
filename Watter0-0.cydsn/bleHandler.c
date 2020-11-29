@@ -37,8 +37,61 @@ CONNECTIONSTATE connState = NOT_CONNECTED;
 
 SendEffekt_t sendEffectInfo;
 
+void handleCY_BLE_SETT_TRANSFERDELAY_CHAR_HANDLE(cy_stc_ble_gatts_write_cmd_req_param_t* parameter){
+    uint8 val = parameter->handleValPair.value.val[0];
+    if(val == 1 || val == 2 || val == 3 || val == 4)
+    {
+        updateSettingsGatt(TRANSFERRATE ,val, CY_BLE_GATT_DB_PEER_INITIATED);
+        sendEffectInfo.delay = (uint16)(1000/val);
+    }
+}
+
+void handleCY_BLE_SETT_SAMPLEDELAY_CHAR_HANDLE(cy_stc_ble_gatts_write_cmd_req_param_t* parameter){
+    uint8 val = parameter->handleValPair.value.val[0];
+    if(val == 5 || val == 10 || val == 15 || val == 20)
+    {
+        updateSettingsGatt(SAMPLERATE ,val, CY_BLE_GATT_DB_PEER_INITIATED);
+        samples.delay = (uint16)(1000/val);
+    }
+}
+
+void handleGATTS_WRITE_REQ(void* parameter){
+    cy_stc_ble_gatts_write_cmd_req_param_t* writeReqParameter = (cy_stc_ble_gatts_write_cmd_req_param_t*)parameter;
+    switch(writeReqParameter->handleValPair.attrHandle)
+    {
+        case CY_BLE_SETT_TRANSFERDELAY_CHAR_HANDLE :
+            handleCY_BLE_SETT_TRANSFERDELAY_CHAR_HANDLE(writeReqParameter);
+        break;
+        
+        case CY_BLE_SETT_SAMPLEDELAY_CHAR_HANDLE :
+            handleCY_BLE_SETT_SAMPLEDELAY_CHAR_HANDLE(writeReqParameter);
+        break;
+        
+        default :
+        
+        break;
+    }
+//    if (writeReqParameter->handleValPair.attrHandle == CY_BLE_SETT_TRANSFERDELAY_CHAR_HANDLE) {
+//        uint8 val = writeReqParameter->handleValPair.value.val[0];
+//        if(val == 1 || val == 2 || val == 3 || val == 4)
+//        {
+//            updateSettingsGatt(TRANSFERRATE ,val, CY_BLE_GATT_DB_PEER_INITIATED);
+//            sendEffectInfo.delay = (uint16)(1000/val);
+//        }
+//    }
+//    if(writeReqParameter->handleValPair.attrHandle == CY_BLE_SETT_SAMPLEDELAY_CHAR_HANDLE){
+//        uint8 val = writeReqParameter->handleValPair.value.val[0];
+//        if(val == 5 || val == 10 || val == 15 || val == 20)
+//        {
+//            updateSettingsGatt(SAMPLERATE ,val, CY_BLE_GATT_DB_PEER_INITIATED);
+//            samples.delay = (uint16)(1000/val);
+//        }
+//    }
+    Cy_BLE_GATTS_WriteRsp(writeReqParameter->connHandle);
+}
+
+///Main BLE event handler, this gets called when an BLE event occurs
 void genericEventHandler(uint32 event, void* eventParameter){
-    //printf("Event: 0x%x\n\r",event);
     switch (event)
     {
         case CY_BLE_EVT_STACK_ON:
@@ -58,55 +111,27 @@ void genericEventHandler(uint32 event, void* eventParameter){
         break;
         
         case CY_BLE_EVT_GATTS_WRITE_REQ:
-            {
-                cy_stc_ble_gatts_write_cmd_req_param_t* writeReqParameter = (cy_stc_ble_gatts_write_cmd_req_param_t*)eventParameter;
-                
-                if (writeReqParameter->handleValPair.attrHandle == CY_BLE_SETT_TRANSFERDELAY_CHAR_HANDLE) {
-                    uint8 val = writeReqParameter->handleValPair.value.val[0];
-                    if(val == 1 || val == 2 || val == 3 || val == 4)
-                    {
-                        updateSettingsGatt(TRANSFERRATE ,val, CY_BLE_GATT_DB_PEER_INITIATED);
-                        sendEffectInfo.delay = (uint16)(1000/val);
-                    }
-                }
-                if(writeReqParameter->handleValPair.attrHandle == CY_BLE_SETT_SAMPLEDELAY_CHAR_HANDLE){
-                    uint8 val = writeReqParameter->handleValPair.value.val[0];
-                    if(val == 5 || val == 10 || val == 15 || val == 20)
-                    {
-                        updateSettingsGatt(SAMPLERATE ,val, CY_BLE_GATT_DB_PEER_INITIATED);
-                        samples.delay = (uint16)(1000/val);
-                    }
-                }
-            Cy_BLE_GATTS_WriteRsp(writeReqParameter->connHandle);
-            }
+            handleGATTS_WRITE_REQ(eventParameter);
         break;
             
         case CY_BLE_EVT_GATTS_INDICATION_ENABLED:
             LOG("CY_BLE_EVT_GATTS_INDICATION_ENABLED\n\r");
-//            xSemaphoreTake(printerSema,portMAX_DELAY);
-//            printf("CY_BLE_EVT_GATTS_INDICATION_ENABLED\n\r");
-//            xSemaphoreGive(printerSema);
-            
         break;
             
         case CY_BLE_EVT_GAP_AUTH_REQ:
-            //printf("CY_BLE_EVT_GAP_AUTH_REQ\r\n");
+            LOG("CY_BLE_EVT_GAP_AUTH_REQ\r\n");
         break;
             
         case CY_BLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ:
             LOG("CY_BLE_EVT_GATTS_READ_CHAR_VAL_ACCESS_REQ: handle: %x \r\n", ((cy_stc_ble_gatts_char_val_read_req_t *)eventParameter)->attrHandle);
-            
         break;
         
         case CY_BLE_EVT_CPSS_WRITE_CHAR:
-            //printf("CY_BLE_EVT_CPSS_WRITE_CHAR\r\n");
+            LOG("CY_BLE_EVT_CPSS_WRITE_CHAR\r\n");
         break;
         
         case CY_BLE_EVT_CPSS_NOTIFICATION_ENABLED:
-            xSemaphoreTake(printerSema,portMAX_DELAY);
-            printf("CY_BLE_EVT_CPSS_NOTIFICATION_ENABLED\n\r");
-            xSemaphoreGive(printerSema);
-            //printf("CY_BLE_EVT_CPSS_NOTIFICATION_ENABLED: char: %x\r\n", locCharIndex);
+            LOG("CY_BLE_EVT_CPSS_NOTIFICATION_ENABLED\n\r");
         break;
             
         default:
@@ -114,6 +139,7 @@ void genericEventHandler(uint32 event, void* eventParameter){
     }
     
 }
+
 
 void bleInterruptNotify(){
     BaseType_t xHigherPriorityTaskWoken;
@@ -151,7 +177,7 @@ void task_SendEffekt(void* arg){
 
         if(CPSNotificationsOn(appConnHandle,cccd))
         {
-            
+            //gather data to be sent
             SendEffekt_t e;
             e.power = sendEffectInfo.power;
             e.cadance = sendEffectInfo.cadance;
@@ -160,37 +186,24 @@ void task_SendEffekt(void* arg){
             uint8_t powerMeasureData[CY_BLE_GATT_DEFAULT_MTU - 3];
             uint8_t length = 0;
             
-            Cy_BLE_Set16ByPtr(powerMeasureData, e.flags);
-            length += sizeof(e.flags);
-            Cy_BLE_Set16ByPtr(powerMeasureData + length, e.power);
-            length += sizeof(e.power);
-            Cy_BLE_Set16ByPtr(powerMeasureData + length, e.cadance);
-            length += sizeof(e.cadance);
-            Cy_BLE_Set16ByPtr(powerMeasureData + length, 0);
-            length += sizeof(e.cadance);
+            //add data to uint8 array
+            addDataToArray(powerMeasureData, &length, e.flags, sizeof(e.flags));
+            addDataToArray(powerMeasureData, &length, e.power, sizeof(e.power));
+            addDataToArray(powerMeasureData, &length, e.cadance, sizeof(e.cadance));
+            addDataToArray(powerMeasureData, &length, 0, sizeof(uint16));
             
-            do
-            {
-            Cy_BLE_ProcessEvents();
-            }
-            while(Cy_BLE_GATT_GetBusyStatus(appConnHandle.attId) == CY_BLE_STACK_STATE_BUSY);
-            
-            
-            if(Cy_BLE_GetConnectionState(appConnHandle) >= CY_BLE_CONN_STATE_CONNECTED)
-            {
-                Cy_BLE_CPSS_SendNotification(appConnHandle, CY_BLE_CPS_POWER_MEASURE, length, powerMeasureData);
-            }
+            //send the array
+            SendEffektNotification(appConnHandle, length, powerMeasureData);
+
         }
+        //wait one period to next transmission
         vTaskDelay(sendEffectInfo.delay);
     }
-    
 }
-
+/// task to update the GATT database periodicly with new battery level.
 void task_updateBattery(void* arg){
     uint8* batterylvl = arg;
     while(1){
-        (*batterylvl)--;
-        
         if(*batterylvl > 100)
             *batterylvl = 100;
         
@@ -198,10 +211,6 @@ void task_updateBattery(void* arg){
         
         vTaskDelay(10000);
     }
-}
-
-void setConnectionHandle(cy_stc_ble_conn_handle_t* handle, void* eventParam){
-    *handle = *(cy_stc_ble_conn_handle_t *)eventParam;
 }
 
 void SendEffekt_init(){
@@ -226,8 +235,8 @@ void updateSettingsGatt(settings_t setting ,uint16 value, uint8 flags){
     }
     
     Hvp.value.val = (uint8*)&value;
-    Hvp.value.actualLen = 2;
-    Hvp.value.len = 2;
+    Hvp.value.actualLen = 1;
+    Hvp.value.len = 1;
     
     if (flags == CY_BLE_GATT_DB_PEER_INITIATED)
     {

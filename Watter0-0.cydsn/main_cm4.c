@@ -26,17 +26,17 @@
 
 #include "bleHandler.h"
 #include "printer.h"
-#include "sampler.h"
 
-int16 dst;
-uint8 batterylvl = 100;
+uint32 dst[2];
+uint8 batterylvl = 0;
 SystemInfo_t systemInformation;
 ADXL345Data accelerometerData;
 
 
 void ADC_ISR_Callback(void){
 
-    sendEffectInfo.power = ADC_CountsTo_mVolts(0,dst);
+    sendEffectInfo.power = ADC_CountsTo_mVolts(0,dst[0]);
+    batterylvl = (uint8) (100 * dst[1]/((float)(1<<12)));
     Cy_DMA_Channel_ClearInterrupt(DMA_Sample_HW, 0);
 }
 
@@ -56,11 +56,11 @@ void Cad_ISR_Callback(void){
 
 int main(void)
 {
-    DMA_Sample_Start((uint32_t *) &(SAR->CHAN_RESULT[0]),&dst);
+    DMA_Sample_Start((uint32_t *) &(SAR->CHAN_RESULT[0]),&dst[0]);
     Cy_DMA_Channel_SetInterruptMask(DMA_Sample_HW,0,CY_DMA_INTR_MASK);
     
     SendEffekt_init();
-    sampler_init();
+    //sampler_init();
     printer_init();
     
     I2C_Start();
@@ -98,7 +98,6 @@ int main(void)
     xTaskCreate(task_ble,"bleTask",2*1024,NULL,2,0);
     xTaskCreate(task_SendEffekt,"SendEffekt",1*1024,&sendEffectInfo,1,0);
     xTaskCreate(task_updateBattery,"updateBattery",1*1024,&batterylvl,1,0);
-    xTaskCreate(task_sampler,"sampler",1*1024,&samples,1,0);
     #ifdef DEBUG_MODE
     xTaskCreate(printSystemInfo,"printSystemInfo",1*1024,&systemInformation,1,0);
     #endif

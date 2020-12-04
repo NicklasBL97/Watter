@@ -12,58 +12,85 @@
 #include "my_I2C.h"
 #include "printer.h"
 #include "watUtility.h"
-static uint8 rbuff[2]; // Read buffer
-static uint8 wbuff[2]; // write buffer
 
-static cy_stc_scb_i2c_master_xfer_config_t register_setting;
 
-void waitForOperation()
+void waitForOperation(uint8_t errnum)
 {
-    /*
-    uint32_t status = I2C_MasterGetStatus();
-    if(0 != (status &CY_SCB_I2C_MASTER_BUSY))
-    {
-        LOG("fejl i masterGetStatus");
-        CyDelayUs(3); // venter på at status ikk er busy mere.
-    }*/
-    return;
+    // Error handle for conditions were master is not ready
+    //CyDelayUs(2);
+    LOG("Fejl %d", errnum);
 }
 
 //for at skrive til et register vil vi gerne skrive to værdier. 
 // En addresse og en indstilling i form af data.
-void writeRegister(uint8 reg_addr, int8 data)
+void writeRegister(uint8_t reg_addr, int8_t data)
 {
-    wbuff[0] = reg_addr;    //tildel det første element til register addressen.
-    wbuff[1] = data;        //tildel det andet element til den data værdi som vi gerne vil bruge til at indstille registeret.
+    //start kommunikation 
+    status = Cy_SCB_I2C_MasterSendStart(I2C_HW,addrADXL,CY_SCB_I2C_WRITE_XFER,TIMEOUT,&I2C_context);
+    if(status != CY_SCB_I2C_SUCCESS)
+    {
+        waitForOperation(1);
+    }
     
-    register_setting.slaveAddress = addrADXL;
-    register_setting.buffer = wbuff;
-    register_setting.bufferSize = 2;
-    register_setting.xferPending = false;
-    I2C_MasterWrite(&register_setting);
-    waitForOperation();
+    Cy_SCB_I2C_MasterReadByte(I2C_HW,CY_SCB_I2C_NAK,TIMEOUT,&I2C_context);
+    if(status != CY_SCB_I2C_SUCCESS)
+    {
+        waitForOperation(8);
+    }
+    // send byte til register
+    Cy_SCB_I2C_MasterWriteByte(I2C_HW,reg_addr,TIMEOUT,&I2C_context);
+    if(status != CY_SCB_I2C_SUCCESS)
+    {
+        waitForOperation(2);
+    }
+    Cy_SCB_I2C_MasterWriteByte(I2C_HW,data,TIMEOUT,&I2C_context);
+    if(status != CY_SCB_I2C_SUCCESS)
+    {
+        waitForOperation(3);
+    }
+    
+    //stop kommunikation
+    I2C_MasterSendStop(TIMEOUT);
+    if(status != CY_SCB_I2C_SUCCESS)
+    {
+        waitForOperation(4);
+    }
 }
 
 // for at læse fra et register skal vi oplyse addressen på det register som vi gerne vil læse på. 
 
 uint8 readRegister(uint8 reg_addr)
 {
-    wbuff[0] = reg_addr;
+    uint8_t readByte;
+    //start kommunikation
+    status = Cy_SCB_I2C_MasterSendStart(I2C_HW,addrADXL,CY_SCB_I2C_READ_XFER,TIMEOUT,&I2C_context);
+    if(status != CY_SCB_I2C_SUCCESS)
+    {
+        waitForOperation(5);
+    }
+    // send byte til register for at starte kommunikation med bestemt register
+    Cy_SCB_I2C_MasterWriteByte(I2C_HW,reg_addr,TIMEOUT,&I2C_context);
+    if(status != CY_SCB_I2C_SUCCESS)
+    {
+        waitForOperation(6);
+    }
+    Cy_SCB_I2C_MasterReadByte(I2C_HW,CY_SCB_I2C_ACK,&readByte,TIMEOUT,&I2C_context);
+    if(status != CY_SCB_I2C_SUCCESS)
+    {
+        waitForOperation(7);
+    }
+    Cy_SCB_I2C_MasterReadByte(I2C_HW,CY_SCB_I2C_NAK,&readByte,TIMEOUT,&I2C_context);
+    if(status != CY_SCB_I2C_SUCCESS)
+    {
+        waitForOperation(8);
+    }
     
-    register_setting.slaveAddress = addrADXL;
-    register_setting.buffer = wbuff;
-    register_setting.bufferSize = 1;
-    register_setting.xferPending = true;
-    
-    I2C_MasterWrite(&register_setting);
-    waitForOperation();
-    
-    register_setting.buffer = rbuff;
-    register_setting.xferPending = false;
-    
-    I2C_MasterRead(&register_setting);
-    waitForOperation();
-    
-    return rbuff[0];
+    //stop kommunikation
+    I2C_MasterSendStop(TIMEOUT);
+    if(status != CY_SCB_I2C_SUCCESS)
+    {
+        waitForOperation(9);
+    }
+    return readByte;
 }
 /* [] END OF FILE */

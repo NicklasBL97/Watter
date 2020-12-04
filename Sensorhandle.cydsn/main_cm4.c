@@ -65,11 +65,7 @@ int main(void)
     {
         // Led sættes så de viser hvis vi oplever fejl
         Cy_GPIO_Write(GREEN_PORT,GREEN_NUM,0);
-        Cy_GPIO_Write(RED_PORT,RED_NUM,1);
-        
-        I2C_MasterSendReStart(I2C_HW, CY_SCB_I2C_READ_XFER, 1);
-        waitForOperation();
-        
+        Cy_GPIO_Write(RED_PORT,RED_NUM,1);        
         
         // Her udregnes Xaxis
         xAxis[0] = readRegister(0x32);
@@ -91,7 +87,6 @@ int main(void)
         yAxis2 = (yAxis[0] | yAxis[1] << 8);
         yAxis2 = yAxis2/256;
         yAxis_p1p2[0]=yAxis2;
-        waitForOperation();
         //rps = RPS(xAxis2,zAxis2);
         
         CyDelay(10);
@@ -113,7 +108,6 @@ int main(void)
         yAxis_p1p2[1]=yAxis_p1p2[0];
         zAxis_p1p2[1]=zAxis_p1p2[0];
         
-        I2C_MasterSendStop(1);
         // Her udskrives de tre Akser
         printf("\t Xa: %.1f \tYa: %.1f \tZa: %.1f \r\n", xAxis2, yAxis2, zAxis2);
         

@@ -18,9 +18,7 @@ ADXL345I2CData I2CData;
 
 void ADXL345Init()
 {
-    I2C_MasterSendStart(0b1010011, CY_SCB_I2C_WRITE_XFER, 1);
-    waitForOperation();
-    
+    Cy_SCB_I2C_Enable(I2C_HW);
     cy_en_scb_i2c_status_t initStatus;
     cy_en_sysint_status_t sysStatus;
     
@@ -40,16 +38,12 @@ void ADXL345Init()
     // initialisering
     //Register 0x2C er BW-Rata som bestemmer båndbredden og data output rate. 
     writeRegister(0x2C,6);
-    waitForOperation();
     //Register 0x2D er Power control som bestemmer hvilket mode den er i f.eks (sleep mode eller measure mode). 
     writeRegister(0x2D, 8);
-    waitForOperation();
     //Register 0x31 er Data format som bestemmer hvilken resolution vi bruger. 
     writeRegister(0x31,9);
-    waitForOperation();
     //Regiseter 0x27 er Activate/inactivatete control. Her aktiveres de akser vi vil læse fra. 
     writeRegister(0x27,112);
-    waitForOperation();
     
     // Calibration
     // X-Axis
@@ -59,10 +53,6 @@ void ADXL345Init()
     // Z-Axis
     writeRegister(0x20,13);
     
-    
-    // stop transmission
-    I2C_MasterSendStop(1);
-    CyDelay(10);
 }
 float deltaAxis2Deg(float xData1,float yData1, float zData1, 
                     float xData2, float yData2, float zData2)
@@ -85,8 +75,6 @@ float deltaAxis2Deg(float xData1,float yData1, float zData1,
 }
 
 ADXL345Data ADXL345GetData(){
-    I2C_MasterSendReStart(0b01010011, CY_SCB_I2C_READ_XFER, 1);
-        waitForOperation();
         
     I2CData.x[0] = readRegister(0x32);
     I2CData.x[1] = readRegister(0x33);
@@ -96,8 +84,6 @@ ADXL345Data ADXL345GetData(){
     
     I2CData.z[0] = readRegister(0x36);
     I2CData.z[1] = readRegister(0x37);
-
-    I2C_MasterSendStop(1);
     
     ADXL345Data data;
     

@@ -12,8 +12,10 @@
 #pragma once
 #include "project.h"
 #define addrADXL (0x53)
+ 
+uint8 status;
 
-void waitForOperation();
+void waitForOperation(uint8_t);
 void writeRegister(uint8, int8);
 uint8 readRegister(uint8);
 

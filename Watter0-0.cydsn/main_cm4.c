@@ -22,7 +22,7 @@
 #define ARM_MATH_CM4
 #include "arm_math.h"
 
-#define DEBUG_MODE
+//#define DEBUG_MODE
 
 #include "bleHandler.h"
 #include "printer.h"

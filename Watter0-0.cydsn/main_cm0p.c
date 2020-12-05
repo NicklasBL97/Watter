@@ -10,13 +10,7 @@ int main(void)
     Cy_SysEnableCM4(CY_CORTEX_M4_APPL_ADDR); 
 
     UART_Start();
-    //ADC_1_Start();
-    //ADC_1_StartConvert();
-    //VDAC_1_Start();
-    //uint16 counter = 0;
-    //uint16 result;
-    
-    //printf("Starting program\n\r");
+
     for(;;)
     {
         Cy_BLE_ProcessEvents();

@@ -200,6 +200,7 @@ void task_SendEffekt(void* arg){
         vTaskDelay(sendEffectInfo.delay);
     }
 }
+
 /// task to update the GATT database periodicly with new battery level.
 void task_updateBattery(void* arg){
     uint8* batterylvl = arg;

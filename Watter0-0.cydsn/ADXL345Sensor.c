@@ -18,7 +18,8 @@ ADXL345I2CData I2CData;
 
 void ADXL345Init()
 {
-    Cy_SCB_I2C_Enable(I2C_HW);
+    Cy_SCB_I2C_Disable(I2C_HW, &I2C_context);
+    //Cy_SCB_I2C_Init();
     cy_en_scb_i2c_status_t initStatus;
     cy_en_sysint_status_t sysStatus;
     
@@ -33,7 +34,7 @@ void ADXL345Init()
     {
         handleError(2);
     }
-    
+    Cy_SCB_I2C_Enable(I2C_HW);
     
     // initialisering
     //Register 0x2C er BW-Rata som bestemmer båndbredden og data output rate. 

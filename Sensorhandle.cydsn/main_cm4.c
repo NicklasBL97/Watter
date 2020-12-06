@@ -35,6 +35,8 @@ int main(void)
     UART_Start();
     I2C_Start();
     
+    initialisering();
+    
     // test variable
     uint16 grader = 0;
     uint16 totalGrader =0;

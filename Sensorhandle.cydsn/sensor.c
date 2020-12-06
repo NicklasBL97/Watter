@@ -10,26 +10,31 @@
  * ========================================
 */
 #include "sensor.h"
+#include "my_I2C.h"
 
 
 void initialisering()
 {
-    cy_en_scb_i2c_status_t initStatus;
-    cy_en_sysint_status_t sysStatus;
-    
-    initStatus = Cy_SCB_I2C_Init(I2C_HW, &I2C_config, &I2C_context);
-    if(initStatus != CY_SCB_I2C_SUCCESS)
+    cy_stc_scb_i2c_context_t i2cContext;
+    Cy_SCB_I2C_Disable(I2C_HW, &i2cContext);
+    const cy_stc_scb_i2c_config_t i2cConfig =
     {
-        waitForOperation(9);
-        
-    }
-    sysStatus = Cy_SysInt_Init(&I2C_SCB_IRQ_cfg, &I2C_Interrupt);
-    if(sysStatus != CY_SYSINT_SUCCESS)
-    {
-        waitForOperation(9);
-    }
-    
-    
+        .i2cMode   = CY_SCB_I2C_MASTER,
+        .useRxFifo = false,
+        .useTxFifo = true,
+        .slaveAddress     = 0U,
+        .slaveAddressMask = 0U,
+        .acceptAddrInFifo = false,
+        .ackGeneralAddr   = false,
+        .enableWakeFromSleep = false,
+        .enableDigitalFilter = false,
+        .lowPhaseDutyCycle = 8U,
+        .highPhaseDutyCycle = 8U,
+    };
+    (void) Cy_SCB_I2C_Init(I2C_HW, &i2cConfig, &i2cContext);
+    NVIC_EnableIRQ((IRQn_Type) I2C_SCB_IRQ_cfg.intrSrc);
+    Cy_SCB_I2C_Enable(I2C_HW);
+
     // initialisering
     //Register 0x2C er BW-Rata som bestemmer båndbredden og data output rate. 
     writeRegister(0x2C,6);

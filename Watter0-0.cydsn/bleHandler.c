@@ -21,6 +21,7 @@
 #include "bleHandler.h"
 #include "sampler.h"
 #include "watUtility.h"
+#include "Battery.h"
 
 #define CPS_CP_RESP_LENGTH                          (0u)
 #define CPS_CP_RESP_OP_CODES                        (1u)
@@ -28,6 +29,8 @@
 #define CPS_CP_RESP_VALUE                           (3u)
 #define CPS_CP_RESP_PARAMETER                       (4u)
 
+#define ARM_MATH_CM4
+#include "arm_math.h"
 
 static cy_stc_ble_conn_handle_t appConnHandle;
 static SemaphoreHandle_t bleSemaphore;
@@ -203,13 +206,18 @@ void task_SendEffekt(void* arg){
 
 /// task to update the GATT database periodicly with new battery level.
 void task_updateBattery(void* arg){
-    uint8* batterylvl = arg;
+    Battery_t* battery = (Battery_t*)arg;
+    
     while(1){
-        if(*batterylvl > 100)
-            *batterylvl = 100;
         
-        Cy_BLE_BASS_SetCharacteristicValue(0,CY_BLE_BAS_BATTERY_LEVEL,sizeof(uint8),batterylvl);
+        //TODO: add a lookup for which Voltage intervals correspond to different battery percentages 
+        //in stead of the voltage to percentage conversion here.
+        battery->batterylvl = (uint8) 100 * battery->BatteryVoltage/3300.0;
         
+        if(battery->batterylvl > 100)
+            battery->batterylvl = 100;
+        
+        Cy_BLE_BASS_SetCharacteristicValue(0,CY_BLE_BAS_BATTERY_LEVEL,sizeof(uint8),&battery->batterylvl);
         vTaskDelay(10000);
     }
 }

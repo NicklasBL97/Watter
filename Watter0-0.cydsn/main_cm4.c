@@ -18,25 +18,23 @@
 #include "limits.h"
 #include "my_I2C.h"
 #include "ADXL345Sensor.h"
+#include "Battery.h"
 
-#define ARM_MATH_CM4
-#include "arm_math.h"
-
-//#define DEBUG_MODE
+#define DEBUG_MODE
 
 #include "bleHandler.h"
 #include "printer.h"
 
 uint32 dst[2];
-uint8 batterylvl = 0;
+Battery_t battery;
 SystemInfo_t systemInformation;
 ADXL345Data accelerometerData;
 
 
 void ADC_ISR_Callback(void){
-
     sendEffectInfo.power = ADC_CountsTo_mVolts(0,dst[0]);
-    batterylvl = (uint8) (100 * dst[1]/((float)(1<<12)));
+    battery.BatteryVoltage = ADC_CountsTo_mVolts(1,dst[1]);
+    
     Cy_DMA_Channel_ClearInterrupt(DMA_Sample_HW, 0);
 }
 
@@ -45,10 +43,6 @@ typedef struct AccelerometerData{
     int16 y;
     int16 z;
 }AccelerometerData;
-
-//uint32 Timer_Count2ms(uint32 count, uint32 fclk){
-//    return 1000 * (float)count/(float)fclk;
-//}
 
 void Cad_ISR_Callback(void){
     accelerometerData = ADXL345GetData();
@@ -60,15 +54,16 @@ int main(void)
     Cy_DMA_Channel_SetInterruptMask(DMA_Sample_HW,0,CY_DMA_INTR_MASK);
     
     SendEffekt_init();
-    //sampler_init();
     printer_init();
     
     I2C_Start();
     ADXL345Init();
     
+    BatteryInit(&battery);
+    
     systemInformation.effekt = &sendEffectInfo.power;
     systemInformation.cadance = &sendEffectInfo.cadance;
-    systemInformation.batterylvl = &batterylvl;
+    systemInformation.batterylvl = &battery.batterylvl;
     systemInformation.accData = &accelerometerData;
     
     __enable_irq();
@@ -97,7 +92,7 @@ int main(void)
     
     xTaskCreate(task_ble,"bleTask",2*1024,NULL,2,0);
     xTaskCreate(task_SendEffekt,"SendEffekt",1*1024,&sendEffectInfo,1,0);
-    xTaskCreate(task_updateBattery,"updateBattery",1*1024,&batterylvl,1,0);
+    xTaskCreate(task_updateBattery,"updateBattery",1*1024,&battery,1,0);
     #ifdef DEBUG_MODE
     xTaskCreate(printSystemInfo,"printSystemInfo",1*1024,&systemInformation,1,0);
     #endif

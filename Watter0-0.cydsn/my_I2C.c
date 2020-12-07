@@ -12,7 +12,7 @@
 #include "my_I2C.h"
 #include "printer.h"
 #include "watUtility.h"
-
+uint8_t readByte;
 
 void waitForOperation(uint8_t errnum)
 {
@@ -32,7 +32,7 @@ void writeRegister(uint8_t reg_addr, int8_t data)
         waitForOperation(1);
     }
     
-    Cy_SCB_I2C_MasterReadByte(I2C_HW,CY_SCB_I2C_NAK,TIMEOUT,&I2C_context);
+    Cy_SCB_I2C_MasterReadByte(I2C_HW,CY_SCB_I2C_NAK,&readByte,TIMEOUT,&I2C_context);
     if(status != CY_SCB_I2C_SUCCESS)
     {
         waitForOperation(8);
@@ -61,7 +61,7 @@ void writeRegister(uint8_t reg_addr, int8_t data)
 
 uint8 readRegister(uint8 reg_addr)
 {
-    uint8_t readByte;
+    
     //start kommunikation
     status = Cy_SCB_I2C_MasterSendStart(I2C_HW,addrADXL,CY_SCB_I2C_READ_XFER,TIMEOUT,&I2C_context);
     if(status != CY_SCB_I2C_SUCCESS)

@@ -13,27 +13,36 @@
 #include "watUtility.h"
 #include <math.h>
 #include "my_I2C.h"
+#include "stdio.h"
 
 ADXL345I2CData I2CData;
+// DETTE ER TEST VARIABLER
+uint16 grader = 0;
+uint16 totalGrader = 0;
+uint8_t antalomgange = 0;
+float xAxis_p1p2[2]={0,0},yAxis_p1p2[2]={0,0},zAxis_p1p2[2]={1,1};
+// SLUTTER HER
 
 void ADXL345Init()
 {
-    Cy_SCB_I2C_Disable(I2C_HW, &I2C_context);
-    //Cy_SCB_I2C_Init();
-    cy_en_scb_i2c_status_t initStatus;
-    cy_en_sysint_status_t sysStatus;
-    
-    initStatus = Cy_SCB_I2C_Init(I2C_HW, &I2C_config, &I2C_context);
-    if(initStatus != CY_SCB_I2C_SUCCESS)
+    cy_stc_scb_i2c_context_t i2cContext;
+    Cy_SCB_I2C_Disable(I2C_HW, &i2cContext);
+    const cy_stc_scb_i2c_config_t i2cConfig =
     {
-        handleError(1);
-        
-    }
-    sysStatus = Cy_SysInt_Init(&I2C_SCB_IRQ_cfg, &I2C_Interrupt);
-    if(sysStatus != CY_SYSINT_SUCCESS)
-    {
-        handleError(2);
-    }
+        .i2cMode   = CY_SCB_I2C_MASTER,
+        .useRxFifo = true,
+        .useTxFifo = true,
+        .slaveAddress     = 0U,
+        .slaveAddressMask = 0U,
+        .acceptAddrInFifo = false,
+        .ackGeneralAddr   = false,
+        .enableWakeFromSleep = false,
+        .enableDigitalFilter = false,
+        .lowPhaseDutyCycle = 8U,
+        .highPhaseDutyCycle = 8U,
+    };
+    (void) Cy_SCB_I2C_Init(I2C_HW, &i2cConfig, &i2cContext);
+    NVIC_EnableIRQ((IRQn_Type) I2C_SCB_IRQ_cfg.intrSrc);
     Cy_SCB_I2C_Enable(I2C_HW);
     
     // initialisering
@@ -48,7 +57,7 @@ void ADXL345Init()
     
     // Calibration
     // X-Axis
-    writeRegister(0x1E,0);
+    writeRegister(0x1E,-2);
     // Y-Axis 
     writeRegister(0x1F,0);
     // Z-Axis
@@ -75,6 +84,36 @@ float deltaAxis2Deg(float xData1,float yData1, float zData1,
     return vinkelDeg;
 }
 
+float RPM(float x, float y, float z)
+{
+    // test variable
+    xAxis_p1p2[0] = x;
+    yAxis_p1p2[0] = y;
+    zAxis_p1p2[0] = z;
+    // Grader drejet = antal grader allerede drejet + nyt antal grader.
+    grader = deltaAxis2Deg(xAxis_p1p2[0],yAxis_p1p2[0],zAxis_p1p2[0],
+                    xAxis_p1p2[1],yAxis_p1p2[1],zAxis_p1p2[1]);
+    totalGrader += grader;
+    
+    // for at tælle antal omgange
+    if(totalGrader>=360)
+    {
+        antalomgange++;
+        totalGrader = totalGrader-360;
+    }
+    
+    // Rykker data en plads i arrayet
+    // så der kan samles et nyt punkt. P1 = P0, P0 = ny værdi næste omgang i loop.
+    xAxis_p1p2[1]=xAxis_p1p2[0];
+    yAxis_p1p2[1]=yAxis_p1p2[0];
+    zAxis_p1p2[1]=zAxis_p1p2[0];
+    
+    printf(" \tGrader: %d ",totalGrader);
+    printf("\tAntal omgange:\t%d \r\n", antalomgange);
+    
+    return antalomgange;
+}
+
 ADXL345Data ADXL345GetData(){
         
     I2CData.x[0] = readRegister(0x32);
@@ -88,10 +127,9 @@ ADXL345Data ADXL345GetData(){
     
     ADXL345Data data;
     
-    data.x = (I2CData.x[0] | I2CData.x[1] << 8) / 256;
-    data.y = (I2CData.y[0] | I2CData.y[1] << 8) / 256;
-    data.z = (I2CData.z[0] | I2CData.z[1] << 8) / 256;
-    
+    data.x = ((I2CData.x[0] | I2CData.x[1] << 8) / 256.0);
+    data.y = ((I2CData.y[0] | I2CData.y[1] << 8) / 256.0);
+    data.z = ((I2CData.z[0] | I2CData.z[1] << 8) / 256.0);
     
     return data;
 }

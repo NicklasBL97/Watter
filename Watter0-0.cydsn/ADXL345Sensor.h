@@ -19,13 +19,14 @@ typedef struct ADXL345I2CData{
 }ADXL345I2CData;
 
 typedef struct ADXL345Data{
-    int16 x;
-    int16 y;
-    int16 z;
+    float x;
+    float y;
+    float z;
 }ADXL345Data;
 
 void ADXL345Init();
 float deltaAxis2Deg(float xData1,float yData1, float zData1, float xData2, float yData2, float zData2);
+float RPM(float x, float y, float z);
 ADXL345Data ADXL345GetData();
 
 

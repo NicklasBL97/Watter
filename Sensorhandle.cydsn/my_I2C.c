@@ -21,15 +21,14 @@ cy_stc_scb_i2c_master_xfer_config_t register_setting;
 
 void waitForOperation(uint8_t errnum)
 {
-    status = Cy_SCB_I2C_IsBusBusy(I2C_HW);
-    printf("Fejl nummer: %d", errnum);
-    while(status == true)
+    Cy_GPIO_Write(RED_PORT,RED_NUM,0);
+    Cy_GPIO_Write(GREEN_PORT,GREEN_NUM,1);
+    errorStatus = Cy_SCB_I2C_MasterGetStatus(I2C_HW,&I2C_context);
+    CyDelayUs(30);
+    /*while(Cy_SCB_I2C_MasterGetStatus(I2C_HW,&I2C_context) == CY_SCB_I2C_MASTER_BUSY)
     {
-        Cy_GPIO_Write(RED_PORT,RED_NUM,0);
-        Cy_GPIO_Write(GREEN_PORT,GREEN_NUM,1);
-        
         CyDelayUs(1); // venter på at status ikk er busy mere.
-    }
+    }*/
     return;
 }
 
@@ -47,7 +46,7 @@ void writeRegister(uint8 reg_addr, int8 data)
     register_setting.xferPending = false;
     
     errorStatus = Cy_SCB_I2C_MasterWrite(I2C_HW,&register_setting,&I2C_context);
-    if(errorStatus == CY_SCB_I2C_SUCCESS)
+    if(errorStatus != CY_SCB_I2C_SUCCESS)
     {
         CyDelayUs(5);        
     }

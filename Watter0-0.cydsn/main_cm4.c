@@ -25,6 +25,7 @@
 #include "bleHandler.h"
 #include "printer.h"
 
+float test;
 uint32 dst[2];
 Battery_t battery;
 SystemInfo_t systemInformation;
@@ -46,6 +47,7 @@ typedef struct AccelerometerData{
 
 void Cad_ISR_Callback(void){
     accelerometerData = ADXL345GetData();
+    test = RPM(accelerometerData.x, accelerometerData.y, accelerometerData.z);
 }
 
 int main(void)

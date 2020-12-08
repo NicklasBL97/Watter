@@ -27,6 +27,7 @@ typedef struct ADXL345Data{
 void ADXL345Init();
 float deltaAxis2Deg(float xData1,float yData1, float zData1, float xData2, float yData2, float zData2);
 float RPM(float x, float y, float z);
+float average(float);
 ADXL345Data ADXL345GetData();
 
 

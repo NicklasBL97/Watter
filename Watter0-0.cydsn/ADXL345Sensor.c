@@ -15,6 +15,12 @@
 #include "my_I2C.h"
 #include "stdio.h"
 
+// movAvg variabler --
+#define M 10
+uint8 indexCounterMovAvg=0;
+float filterArray[M];
+//
+
 ADXL345I2CData I2CData;
 // DETTE ER TEST VARIABLER
 uint16 grader = 0;
@@ -47,7 +53,7 @@ void ADXL345Init()
     
     // initialisering
     //Register 0x2C er BW-Rata som bestemmer båndbredden og data output rate. 
-    writeRegister(0x2C,6);
+    writeRegister(0x2C,11);
     //Register 0x2D er Power control som bestemmer hvilket mode den er i f.eks (sleep mode eller measure mode). 
     writeRegister(0x2D, 8);
     //Register 0x31 er Data format som bestemmer hvilken resolution vi bruger. 
@@ -90,6 +96,7 @@ float RPM(float x, float y, float z)
     xAxis_p1p2[0] = x;
     yAxis_p1p2[0] = y;
     zAxis_p1p2[0] = z;
+    
     // Grader drejet = antal grader allerede drejet + nyt antal grader.
     grader = deltaAxis2Deg(xAxis_p1p2[0],yAxis_p1p2[0],zAxis_p1p2[0],
                     xAxis_p1p2[1],yAxis_p1p2[1],zAxis_p1p2[1]);
@@ -99,7 +106,7 @@ float RPM(float x, float y, float z)
     if(totalGrader>=360)
     {
         antalomgange++;
-        totalGrader = totalGrader-360;
+        totalGrader = 0;
     }
     
     // Rykker data en plads i arrayet
@@ -108,10 +115,37 @@ float RPM(float x, float y, float z)
     yAxis_p1p2[1]=yAxis_p1p2[0];
     zAxis_p1p2[1]=zAxis_p1p2[0];
     
-    printf(" \tGrader: %d ",totalGrader);
-    printf("\tAntal omgange:\t%d \r\n", antalomgange);
+    float omgang=(grader/360.0)/(1/20.0);
+    float RPM = omgang*60.0; 
     
-    return antalomgange;
+    float avgRpm = average(RPM);
+    
+    printf(" \tGrader: %d ", grader);
+    printf("\tAntalRPM:\t%.1f \r\n", avgRpm);
+    
+    return RPM;
+}
+float average(float axisData)
+{  
+    float sum = 0;
+    // circ buffer
+    if(indexCounterMovAvg % M-1 == 1)
+    {
+        filterArray[indexCounterMovAvg] = axisData/M;
+        indexCounterMovAvg = 0;
+    }
+    else
+    {
+        filterArray[indexCounterMovAvg] = axisData/M;
+        indexCounterMovAvg++;
+    }
+    
+    for(size_t i=0; i<M; i++)
+    {
+        sum += filterArray[i];   
+    }
+    return sum;
+    
 }
 
 ADXL345Data ADXL345GetData(){

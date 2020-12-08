@@ -50,21 +50,25 @@ void Cad_ISR_Callback(void){
 
 int main(void)
 {
+    //enable DMA for getting samples from the ADC sampling on the instrumental amplifier and battery
     DMA_Sample_Start((uint32_t *) &(SAR->CHAN_RESULT[0]),&dst[0]);
     Cy_DMA_Channel_SetInterruptMask(DMA_Sample_HW,0,CY_DMA_INTR_MASK);
     
+    //Start subsystems and hardware blocks
     SendEffekt_init();
     printer_init();
-    
+    BatteryInit(&battery);
     I2C_Start();
     ADXL345Init();
-    
-    BatteryInit(&battery);
+    ADC_Start();
+    ADC_StartConvert();
+    UART_Start();
     
     systemInformation.effekt = &sendEffectInfo.power;
     systemInformation.cadance = &sendEffectInfo.cadance;
     systemInformation.batterylvl = &battery.batterylvl;
     systemInformation.accData = &accelerometerData;
+    
     
     __enable_irq();
     Cy_SysInt_Init(&Sample_Int_cfg,ADC_ISR_Callback); 
@@ -75,29 +79,28 @@ int main(void)
     NVIC_ClearPendingIRQ(Cad_int_cfg.intrSrc);
 	NVIC_EnableIRQ(Cad_int_cfg.intrSrc);
     
-    ADC_Start();
-    //ADC_IRQ_Enable();
-    ADC_StartConvert();
-    UART_Start();
-    
 
-    
+    //initialize timer for periodic sampling from I2C sensor
     Cy_TCPWM_Counter_Init(Timer_Cad_Sample_HW, Timer_Cad_Sample_CNT_NUM,&Timer_Cad_Sample_config);
     Cy_TCPWM_Enable_Multiple(Timer_Cad_Sample_HW, Timer_Cad_Sample_CNT_MASK);
     Cy_TCPWM_TriggerStart(Timer_Cad_Sample_HW,Timer_Cad_Sample_CNT_MASK);
     
     
+    //
     setvbuf(stdin,NULL,_IONBF,0);
     setvbuf(stdout,NULL,_IONBF,0);
     
+    //Create FreeRTOS tasks 
     xTaskCreate(task_ble,"bleTask",2*1024,NULL,2,0);
     xTaskCreate(task_SendEffekt,"SendEffekt",1*1024,&sendEffectInfo,1,0);
     xTaskCreate(task_updateBattery,"updateBattery",1*1024,&battery,1,0);
     #ifdef DEBUG_MODE
     xTaskCreate(printSystemInfo,"printSystemInfo",1*1024,&systemInformation,1,0);
     #endif
-    vTaskStartScheduler(); //Blocking call, to execute code beyond this line it has to be in the form of a Task
-    while(1){}
+    
+    //start the scheduler
+    vTaskStartScheduler(); //Blocking call, to execute code beyond this line it has to be in the form of a Task or interrupt
+    while(1);
 }
 
 /* [] END OF FILE */

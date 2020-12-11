@@ -14,7 +14,7 @@ uint8 CPSNotificationsOn(cy_stc_ble_conn_handle_t connection, uint16 cccd){
 }
 
 ///Utility function to add one data element to an array that can be send with the function SendEffektNotification
-void addDataToArray(uint8_t * array, uint8* stride, uint8 data, uint8 sizeOfData){
+void addDataToArray(uint8_t * array, uint8* stride, uint16 data, uint8 sizeOfData){
     Cy_BLE_Set16ByPtr(array + *stride, data);
     *stride += sizeOfData;
 }

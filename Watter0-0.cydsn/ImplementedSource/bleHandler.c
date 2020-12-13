@@ -1,16 +1,13 @@
-/* ========================================
- *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
- *
- * ========================================
-*/
-
-/* [] END OF FILE */
+/**
+ * @file bleHandler.c
+ * @author nicklas
+ * @brief module for all things bluetooth
+ * @version 1.0
+ * @date 2020-12-13
+ * 
+ * 
+ * 
+ */
 
 #include "project.h"
 #include "stdio.h"
@@ -29,16 +26,12 @@
 #define CPS_CP_RESP_VALUE                           (3u)
 #define CPS_CP_RESP_PARAMETER                       (4u)
 
-#define ARM_MATH_CM4
-#include "arm_math.h"
-
 static cy_stc_ble_conn_handle_t appConnHandle;
 static SemaphoreHandle_t bleSemaphore;
 SemaphoreHandle_t powerMutex;
-
 CONNECTIONSTATE connState = NOT_CONNECTED;
-
 SendEffekt_t sendEffectInfo;
+
 
 void handleCY_BLE_SETT_TRANSFERDELAY_CHAR_HANDLE(cy_stc_ble_gatts_write_cmd_req_param_t* parameter){
     uint8 val = parameter->handleValPair.value.val[0];
@@ -126,7 +119,6 @@ void genericEventHandler(uint32 event, void* eventParameter){
     }
     
 }
-
 
 void bleInterruptNotify(){
     BaseType_t xHigherPriorityTaskWoken;

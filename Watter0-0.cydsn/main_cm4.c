@@ -16,15 +16,15 @@
 #include "semphr.h"
 #include "queue.h"
 #include "limits.h"
-#include "my_I2C.h"
-#include "ADXL345Sensor.h"
-#include "Battery.h"
-#include "PowerMode.h"
+#include "ImplementedSource/my_I2C.h"
+#include "ImplementedSource/ADXL345Sensor.h"
+#include "ImplementedSource/Battery.h"
+#include "ImplementedSource/PowerMode.h"
 
 #define DEBUG_MODE
 
-#include "bleHandler.h"
-#include "printer.h"
+#include "ImplementedSource/bleHandler.h"
+#include "ImplementedSource/printer.h"
 
 float test;
 uint32 dst[2];
@@ -87,7 +87,7 @@ int main(void)
     Cy_TCPWM_TriggerStart(Timer_Cad_Sample_HW,Timer_Cad_Sample_CNT_MASK);
     
     
-    //
+    //No IO buffering, write when something is put in stdout
     setvbuf(stdin,NULL,_IONBF,0);
     setvbuf(stdout,NULL,_IONBF,0);
     
@@ -95,7 +95,7 @@ int main(void)
     xTaskCreate(task_ble,"bleTask",2*1024,NULL,2,0);
     xTaskCreate(task_SendEffekt,"SendEffekt",1*1024,&sendEffectInfo,1,0);
     xTaskCreate(task_updateBattery,"updateBattery",1*1024,&battery,1,0);
-    //xTaskCreate(task_gotoDeepSleep,"deepsleep",1*1024,NULL,1,0);
+    xTaskCreate(task_gotoDeepSleep,"deepsleep",1*1024,NULL,1,0);
     #ifdef DEBUG_MODE
     xTaskCreate(printSystemInfo,"printSystemInfo",1*1024,&systemInformation,1,0);
     #endif

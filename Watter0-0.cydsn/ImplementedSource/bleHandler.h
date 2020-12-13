@@ -17,7 +17,6 @@
 #include "semphr.h"
 #include "printer.h"
 
-
 typedef enum CONNECTIONSTATE {
     NOT_CONNECTED = 0,
     CONNECTED = 1
@@ -35,19 +34,29 @@ typedef enum settings_t{
     SAMPLERATE
 }settings_t;
 
-
+/**
+ * @brief Enum for different states of connection to a client
+ * 
+ */
 extern CONNECTIONSTATE connState;
+
+/**
+ * @brief the struct used for any information to be send with the function \ref <task_SendEffekt>"()"
+ * 
+ */
 extern SendEffekt_t sendEffectInfo;
+
+/**
+ * @brief The mutex locked when using \p sendEffectInfo
+ * 
+ */
 extern SemaphoreHandle_t powerMutex;
 
-/***************************************************************************
-Function to perodically send the power output via BLE.
-
-This function implements a periodic BLE notification with the power output to the connected client.
-The function is implemented as a FreeTROS task, and should be added to scheduler using xTaskCreate().
- @param arg Unused.
- @return void.
-****************************************************************************/
+/**
+ * @brief the FreeRTOS task to send CPS notifications
+ * 
+ * @param arg 
+ */
 void task_SendEffekt(void* arg);
 
 /***************************************************************************

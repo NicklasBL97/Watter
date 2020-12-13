@@ -2,12 +2,12 @@
 #include "printer.h"
 
 ///Utility function to check if the current connection has enabled CPS notifications
-uint8 CPSNotificationsOn(cy_stc_ble_conn_handle_t connection, uint16 cccd){
+uint8 CPSNotificationsOn(cy_stc_ble_conn_handle_t connection, const uint16_t* cccd){
     
     
-    Cy_BLE_CPSS_GetCharacteristicDescriptor(connection, CY_BLE_CPS_POWER_MEASURE, CY_BLE_CPS_CCCD, CY_BLE_CCCD_LEN, (uint8_t*)&cccd);
+    Cy_BLE_CPSS_GetCharacteristicDescriptor(connection, CY_BLE_CPS_POWER_MEASURE, CY_BLE_CPS_CCCD, CY_BLE_CCCD_LEN, (uint8*)cccd);
           
-    if(cccd == CY_BLE_CCCD_NOTIFICATION)
+    if(*cccd == CY_BLE_CCCD_NOTIFICATION)
         return 1;
 
     return 0;

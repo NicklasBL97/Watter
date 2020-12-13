@@ -22,7 +22,7 @@
  * @param cccd 
  * @return uint8 
  */
-uint8 CPSNotificationsOn(const cy_stc_ble_conn_handle_t connection, const  uint16 cccd);
+uint8 CPSNotificationsOn(const cy_stc_ble_conn_handle_t connection, const  uint16_t* cccd);
 
 /**
  * @brief 

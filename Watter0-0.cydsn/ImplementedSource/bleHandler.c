@@ -154,7 +154,7 @@ void task_SendEffekt(void* arg){
     while(1){
         uint16_t cccd = CY_BLE_CCCD_DEFAULT;
 
-        if(CPSNotificationsOn(appConnHandle,cccd))
+        if(CPSNotificationsOn(appConnHandle,&cccd))
         {
             //gather data to be sent
             SendEffekt_t e;

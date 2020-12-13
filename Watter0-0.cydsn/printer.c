@@ -39,10 +39,6 @@ void printSystemInfo(void* info){
         printf("Current power: %d\r\n",*(sysinfo->effekt));
         printf("Current cadance: %d\r\n",*sysinfo->cadance);
         printf("Current BatteryLevel: %d\r\n",*sysinfo->batterylvl);
-        printf("\tX: %.2f", sysinfo->accData->x);
-        printf("\tY: %.2f", sysinfo->accData->y);
-        printf("\tZ: %.2f \r\n", sysinfo->accData->z);
-        
         printf("\nEvents:\r\n");
         xSemaphoreGive(printerSema);
         vTaskDelay(1000);

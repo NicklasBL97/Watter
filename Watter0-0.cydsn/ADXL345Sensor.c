@@ -120,10 +120,10 @@ float RPM(float x, float y, float z)
     
     float avgRpm = average(RPM);
     
-    printf(" \tGrader: %d ", grader);
-    printf("\tAntalRPM:\t%.1f \r\n", avgRpm);
+    //printf(" \tGrader: %d ", grader);
+    //printf("\tAntalRPM:\t%.1f \r\n", avgRpm);
     
-    return RPM;
+    return avgRpm;
 }
 float average(float axisData)
 {  

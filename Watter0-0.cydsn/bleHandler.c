@@ -74,22 +74,6 @@ void handleGATTS_WRITE_REQ(void* parameter){
         
         break;
     }
-//    if (writeReqParameter->handleValPair.attrHandle == CY_BLE_SETT_TRANSFERDELAY_CHAR_HANDLE) {
-//        uint8 val = writeReqParameter->handleValPair.value.val[0];
-//        if(val == 1 || val == 2 || val == 3 || val == 4)
-//        {
-//            updateSettingsGatt(TRANSFERRATE ,val, CY_BLE_GATT_DB_PEER_INITIATED);
-//            sendEffectInfo.delay = (uint16)(1000/val);
-//        }
-//    }
-//    if(writeReqParameter->handleValPair.attrHandle == CY_BLE_SETT_SAMPLEDELAY_CHAR_HANDLE){
-//        uint8 val = writeReqParameter->handleValPair.value.val[0];
-//        if(val == 5 || val == 10 || val == 15 || val == 20)
-//        {
-//            updateSettingsGatt(SAMPLERATE ,val, CY_BLE_GATT_DB_PEER_INITIATED);
-//            samples.delay = (uint16)(1000/val);
-//        }
-//    }
     Cy_BLE_GATTS_WriteRsp(writeReqParameter->connHandle);
 }
 

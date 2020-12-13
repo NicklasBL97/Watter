@@ -21,7 +21,7 @@ typedef struct SystemInfo_t{
     int16* effekt;
     int16* cadance;
     uint8* batterylvl;
-    ADXL345Data* accData;
+
 }SystemInfo_t;
 
 extern SemaphoreHandle_t printerSema;

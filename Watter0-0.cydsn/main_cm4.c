@@ -19,6 +19,7 @@
 #include "my_I2C.h"
 #include "ADXL345Sensor.h"
 #include "Battery.h"
+#include "PowerMode.h"
 
 #define DEBUG_MODE
 
@@ -47,7 +48,7 @@ typedef struct AccelerometerData{
 
 void Cad_ISR_Callback(void){
     accelerometerData = ADXL345GetData();
-    test = RPM(accelerometerData.x, accelerometerData.y, accelerometerData.z);
+    sendEffectInfo.cadance = (int16)RPM(accelerometerData.x, accelerometerData.y, accelerometerData.z);
 }
 
 int main(void)
@@ -69,8 +70,6 @@ int main(void)
     systemInformation.effekt = &sendEffectInfo.power;
     systemInformation.cadance = &sendEffectInfo.cadance;
     systemInformation.batterylvl = &battery.batterylvl;
-    systemInformation.accData = &accelerometerData;
-    
     
     __enable_irq();
     Cy_SysInt_Init(&Sample_Int_cfg,ADC_ISR_Callback); 
@@ -96,6 +95,7 @@ int main(void)
     xTaskCreate(task_ble,"bleTask",2*1024,NULL,2,0);
     xTaskCreate(task_SendEffekt,"SendEffekt",1*1024,&sendEffectInfo,1,0);
     xTaskCreate(task_updateBattery,"updateBattery",1*1024,&battery,1,0);
+    //xTaskCreate(task_gotoDeepSleep,"deepsleep",1*1024,NULL,1,0);
     #ifdef DEBUG_MODE
     xTaskCreate(printSystemInfo,"printSystemInfo",1*1024,&systemInformation,1,0);
     #endif

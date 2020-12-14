@@ -13,7 +13,7 @@
 #include "project.h"
 
 /**
- * @brief 
+ * @brief This struct can be used to store information about a battery voltage and percentage charge
  * 
  */
 typedef struct {
@@ -22,8 +22,8 @@ typedef struct {
 }Battery_t;
 
 /**
- * @brief 
+ * @brief Initialisation function for a Battery_t struct
  * 
- * @param battery 
+ * @param battery The battery struct to initialise
  */
 void BatteryInit(Battery_t* battery);

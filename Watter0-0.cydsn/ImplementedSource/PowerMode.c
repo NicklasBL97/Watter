@@ -11,7 +11,7 @@ cy_stc_syspm_callback_params_t callbackParams = {
 	    /*.context    =*/ NULL
 	};
     
-    cy_stc_syspm_callback_t PwmDeepSleepCb = {TCPWM_DeepSleepCallback,  /* Callback function */
+    cy_stc_syspm_callback_t PwmDeepSleepCb = {DeepSleepCallback,  /* Callback function */
                                           CY_SYSPM_DEEPSLEEP,       /* Callback type */
                                           CY_SYSPM_SKIP_CHECK_READY |
                                           CY_SYSPM_SKIP_CHECK_FAIL, /* Skip mode */
@@ -19,7 +19,7 @@ cy_stc_syspm_callback_params_t callbackParams = {
                                           NULL, NULL};				/* For internal usage */
 
 
-cy_en_syspm_status_t TCPWM_DeepSleepCallback(
+cy_en_syspm_status_t DeepSleepCallback(
     cy_stc_syspm_callback_params_t *callbackParams, cy_en_syspm_callback_mode_t mode)
 {
     cy_en_syspm_status_t retVal = CY_SYSPM_FAIL;
@@ -51,6 +51,7 @@ void task_gotoDeepSleep(void* arg){
         if(connState == NOT_CONNECTED){
             vTaskDelay(60000);
             if(connState == NOT_CONNECTED)
+                LOG("Deep sleep\r\n");
                 Cy_SysPm_CpuEnterDeepSleep(CY_SYSPM_WAIT_FOR_INTERRUPT);
         }
             

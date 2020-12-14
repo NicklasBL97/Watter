@@ -16,16 +16,16 @@
 #define LED_OFF 1
 
 /**
- * @brief 
+ * @brief Check if notifications on the CPS is on
  * 
- * @param connection 
- * @param cccd 
- * @return uint8 
+ * @param connection The current connection handle
+ * @param cccd The place to store Client Characteristic Configuration Descriptor
+ * @return uint8 0 if off and 1 if on
  */
 uint8 CPSNotificationsOn(const cy_stc_ble_conn_handle_t connection, const  uint16_t* cccd);
 
 /**
- * @brief 
+ * @brief Function to add data in a byte
  * 
  * @param array 
  * @param stride 

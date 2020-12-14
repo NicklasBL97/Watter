@@ -15,7 +15,8 @@
 #include "ADXL345Sensor.h"
 
 /**
- * @brief 
+ * @brief This struct is used to point at different variables of interrest. Variables can then be printed with printSystemInfo()
+ * 
  * 
  */
 typedef struct SystemInfo_t{

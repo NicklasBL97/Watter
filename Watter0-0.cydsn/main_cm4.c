@@ -95,7 +95,7 @@ int main(void)
     xTaskCreate(task_ble,"bleTask",2*1024,NULL,2,0);
     xTaskCreate(task_SendEffekt,"SendEffekt",1*1024,&sendEffectInfo,1,0);
     xTaskCreate(task_updateBattery,"updateBattery",1*1024,&battery,1,0);
-    xTaskCreate(task_gotoDeepSleep,"deepsleep",1*1024,NULL,1,0);
+    //xTaskCreate(task_gotoDeepSleep,"deepsleep",1*1024,NULL,1,0);
     #ifdef DEBUG_MODE
     xTaskCreate(printSystemInfo,"printSystemInfo",1*1024,&systemInformation,1,0);
     #endif

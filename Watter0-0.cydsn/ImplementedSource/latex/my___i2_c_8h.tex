@@ -1,0 +1,103 @@
+\doxysection{my\+\_\+\+I2\+C.\+h File Reference}
+\label{my___i2_c_8h}\index{my\_I2C.h@{my\_I2C.h}}
+{\ttfamily \#include \char`\"{}project.\+h\char`\"{}}\newline
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{my___i2_c_8h_a10c6add0fd798193b4ff18c122ef6428}} 
+\#define \textbf{ addr\+A\+D\+XL}~(0x53)
+\begin{DoxyCompactList}\small\item\em This value is the address of the I2C slave unit which in this case is A\+D\+XL 345. \end{DoxyCompactList}\item 
+\mbox{\label{my___i2_c_8h_a45ba202b05caf39795aeca91b0ae547e}} 
+\#define \textbf{ T\+I\+M\+E\+O\+UT}~100
+\begin{DoxyCompactList}\small\item\em This value is the timeout. Used in the I2C functions used ind both {\ttfamily write\+Register} \& {\ttfamily read\+Register} . \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \textbf{ wait\+For\+Operation} (uint8\+\_\+t errnum)
+\begin{DoxyCompactList}\small\item\em Error handleling function. \end{DoxyCompactList}\item 
+void \textbf{ write\+Register} (uint8\+\_\+t reg\+\_\+addr, int8\+\_\+t data)
+\begin{DoxyCompactList}\small\item\em I2C write function. \end{DoxyCompactList}\item 
+uint8 \textbf{ read\+Register} (uint8 reg\+\_\+addr)
+\begin{DoxyCompactList}\small\item\em I2C read function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{my___i2_c_8h_a6adfdd768484f85214951d19276cb4a8}} 
+cy\+\_\+en\+\_\+scb\+\_\+i2c\+\_\+status\+\_\+t \textbf{ status}
+\begin{DoxyCompactList}\small\item\em Status contains cy\+\_\+en\+\_\+scb\+\_\+i2c\+\_\+status\+\_\+t as a simpler expression. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+your name ({\texttt{ you@domain.\+com}}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2020-\/12-\/13
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2020 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{my___i2_c_8h_aca30927c0811b1d1825447971a2e3ed6}} 
+\index{my\_I2C.h@{my\_I2C.h}!readRegister@{readRegister}}
+\index{readRegister@{readRegister}!my\_I2C.h@{my\_I2C.h}}
+\doxysubsubsection{readRegister()}
+{\footnotesize\ttfamily uint8 read\+Register (\begin{DoxyParamCaption}\item[{uint8}]{reg\+\_\+addr }\end{DoxyParamCaption})}
+
+
+
+I2C read function. 
+
+This function starts I2C communication, sets the address to read from, and read from the specified address and stops communication when a byte has been read.
+
+
+\begin{DoxyParams}{Parameters}
+{\em reg\+\_\+addr} & The register to read data from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+uint8 Data read from the specified register address 
+\end{DoxyReturn}
+\mbox{\label{my___i2_c_8h_ae03f86c8f50998f55806f9b04fd57459}} 
+\index{my\_I2C.h@{my\_I2C.h}!waitForOperation@{waitForOperation}}
+\index{waitForOperation@{waitForOperation}!my\_I2C.h@{my\_I2C.h}}
+\doxysubsubsection{waitForOperation()}
+{\footnotesize\ttfamily void wait\+For\+Operation (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{errnum }\end{DoxyParamCaption})}
+
+
+
+Error handleling function. 
+
+This error handleling function prints out {\ttfamily errnum} along with a message that an error has occurred. This is done by using the L\+O\+G() function.
+
+
+\begin{DoxyParams}{Parameters}
+{\em errnum} & Error number. The function when called is handed a number, thus you know where the function is called from. \\
+\hline
+\end{DoxyParams}
+\mbox{\label{my___i2_c_8h_a0ea2d3cc0bc62617bdad20a75630dd2f}} 
+\index{my\_I2C.h@{my\_I2C.h}!writeRegister@{writeRegister}}
+\index{writeRegister@{writeRegister}!my\_I2C.h@{my\_I2C.h}}
+\doxysubsubsection{writeRegister()}
+{\footnotesize\ttfamily void write\+Register (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{reg\+\_\+addr,  }\item[{int8\+\_\+t}]{data }\end{DoxyParamCaption})}
+
+
+
+I2C write function. 
+
+This function starts the I2C communication, defines that it is at write transfer and stops the communication after it is done. ~\newline
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em reg\+\_\+addr} & Register address of the register the user wants to write to. ~\newline
+ \\
+\hline
+{\em data} & Data is the argument you want to write to the given register in {\ttfamily reg\+\_\+addr}. \\
+\hline
+\end{DoxyParams}

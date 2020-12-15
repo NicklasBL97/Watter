@@ -1,0 +1,166 @@
+\doxysection{ble\+Handler.\+h File Reference}
+\label{ble_handler_8h}\index{bleHandler.h@{bleHandler.h}}
+{\ttfamily \#include \char`\"{}project.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Free\+R\+T\+O\+S.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}semphr.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}printer.\+h\char`\"{}}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ Send\+Effekt\+\_\+t}
+\begin{DoxyCompactList}\small\item\em The struct to store neccessary information when sending C\+PS notifications. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{ble_handler_8h_acdede25bbef044da33f316ab862bb927}} 
+typedef enum \textbf{ C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+S\+T\+A\+TE} \textbf{ C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+S\+T\+A\+TE}
+\begin{DoxyCompactList}\small\item\em The enum for the differnt states of B\+LE connection. \end{DoxyCompactList}\item 
+\mbox{\label{ble_handler_8h_abed20bc9ea4687642cb07feedad8ed4b}} 
+typedef struct \textbf{ Send\+Effekt\+\_\+t} \textbf{ Send\+Effekt\+\_\+t}
+\begin{DoxyCompactList}\small\item\em The struct to store neccessary information when sending C\+PS notifications. \end{DoxyCompactList}\item 
+\mbox{\label{ble_handler_8h_ab96668549e54ac6334ad156120fa6473}} 
+typedef enum \textbf{ settings\+\_\+t} \textbf{ settings\+\_\+t}
+\begin{DoxyCompactList}\small\item\em The enum for different possible settings to change. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{ble_handler_8h_af8623e34e1b359b843c5818323b3128c}} 
+enum \textbf{ C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+S\+T\+A\+TE} \{ {\bfseries N\+O\+T\+\_\+\+C\+O\+N\+N\+E\+C\+T\+ED} = 0, 
+{\bfseries C\+O\+N\+N\+E\+C\+T\+ED} = 1
+ \}
+\begin{DoxyCompactList}\small\item\em The enum for the differnt states of B\+LE connection. \end{DoxyCompactList}\item 
+\mbox{\label{ble_handler_8h_adf75d64a9687e5466e0691024be8d757}} 
+enum \textbf{ settings\+\_\+t} \{ {\bfseries T\+R\+A\+N\+S\+F\+E\+R\+R\+A\+TE}, 
+{\bfseries S\+A\+M\+P\+L\+E\+R\+A\+TE}
+ \}
+\begin{DoxyCompactList}\small\item\em The enum for different possible settings to change. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \textbf{ task\+\_\+\+Send\+Effekt} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em The Free\+R\+T\+OS task to send C\+PS notifications. \end{DoxyCompactList}\item 
+void \textbf{ task\+\_\+ble} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em The task called when a B\+LE event occurs This task calls the Cy\+\_\+\+B\+L\+E\+\_\+\+Process\+Events() which will call the callback function. \end{DoxyCompactList}\item 
+void \textbf{ task\+\_\+update\+Battery} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em This task periodically updates the battery level in the G\+A\+TT database. The G\+A\+TT database is only updated at a certain frequency way below the sampling rate to avoid overloading the system by updating the database at a high frequency. \end{DoxyCompactList}\item 
+void \textbf{ set\+Connection\+Handle} (cy\+\_\+stc\+\_\+ble\+\_\+conn\+\_\+handle\+\_\+t $\ast$handle, void $\ast$event\+Param)
+\begin{DoxyCompactList}\small\item\em helper function to set the Connection Handle object \end{DoxyCompactList}\item 
+\mbox{\label{ble_handler_8h_a58daa0ca3c0484e4090c4dba2d6437ec}} 
+void \textbf{ Send\+Effekt\+\_\+init} ()
+\begin{DoxyCompactList}\small\item\em Init function for the send\+Effect\+Info variable. \end{DoxyCompactList}\item 
+\mbox{\label{ble_handler_8h_a1e452c11f87adea1148939275d24b978}} 
+void {\bfseries sampler\+\_\+init} ()
+\item 
+void \textbf{ update\+Settings\+Gatt} (\textbf{ settings\+\_\+t} setting, uint16 value, uint8 flags)
+\begin{DoxyCompactList}\small\item\em Helper function for updating the G\+A\+TT database and settings\+\_\+t struct with new settings. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{ble_handler_8h_a68372cda775aa80082cbdfbdcab7776a}} 
+\textbf{ C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+S\+T\+A\+TE} \textbf{ conn\+State}
+\begin{DoxyCompactList}\small\item\em Enum for different states of connection to a client. \end{DoxyCompactList}\item 
+\mbox{\label{ble_handler_8h_aa941c5603342b70cb90671e0210300f4}} 
+\textbf{ Send\+Effekt\+\_\+t} \textbf{ send\+Effect\+Info}
+\begin{DoxyCompactList}\small\item\em The struct used for any information to be send with a C\+PS notification. \end{DoxyCompactList}\item 
+\mbox{\label{ble_handler_8h_ac0d707b8d9db5de617ea51163e1828fb}} 
+Semaphore\+Handle\+\_\+t \textbf{ power\+Mutex}
+\begin{DoxyCompactList}\small\item\em The mutex locked when using {\ttfamily send\+Effect\+Info}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+your name ({\texttt{ you@domain.\+com}}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2020-\/12-\/13
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2020 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{ble_handler_8h_ad754c23a20868be6385751c0f6d443c7}} 
+\index{bleHandler.h@{bleHandler.h}!setConnectionHandle@{setConnectionHandle}}
+\index{setConnectionHandle@{setConnectionHandle}!bleHandler.h@{bleHandler.h}}
+\doxysubsubsection{setConnectionHandle()}
+{\footnotesize\ttfamily void set\+Connection\+Handle (\begin{DoxyParamCaption}\item[{cy\+\_\+stc\+\_\+ble\+\_\+conn\+\_\+handle\+\_\+t $\ast$}]{handle,  }\item[{void $\ast$}]{event\+Param }\end{DoxyParamCaption})}
+
+
+
+helper function to set the Connection Handle object 
+
+
+\begin{DoxyParams}{Parameters}
+{\em handle} & The handle to be updated \\
+\hline
+{\em event\+Param} & The event parameter from the event handler \\
+\hline
+\end{DoxyParams}
+\mbox{\label{ble_handler_8h_a77f342f27014948fc7999194c853ce8e}} 
+\index{bleHandler.h@{bleHandler.h}!task\_ble@{task\_ble}}
+\index{task\_ble@{task\_ble}!bleHandler.h@{bleHandler.h}}
+\doxysubsubsection{task\_ble()}
+{\footnotesize\ttfamily void task\+\_\+ble (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
+
+
+
+The task called when a B\+LE event occurs This task calls the Cy\+\_\+\+B\+L\+E\+\_\+\+Process\+Events() which will call the callback function. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & unused \\
+\hline
+\end{DoxyParams}
+\mbox{\label{ble_handler_8h_a7a6889de3e114c4ad039b377f4b3070d}} 
+\index{bleHandler.h@{bleHandler.h}!task\_SendEffekt@{task\_SendEffekt}}
+\index{task\_SendEffekt@{task\_SendEffekt}!bleHandler.h@{bleHandler.h}}
+\doxysubsubsection{task\_SendEffekt()}
+{\footnotesize\ttfamily void task\+\_\+\+Send\+Effekt (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
+
+
+
+The Free\+R\+T\+OS task to send C\+PS notifications. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & unused \\
+\hline
+\end{DoxyParams}
+\mbox{\label{ble_handler_8h_a88bc9880ec3f46995024e0926ba24cd9}} 
+\index{bleHandler.h@{bleHandler.h}!task\_updateBattery@{task\_updateBattery}}
+\index{task\_updateBattery@{task\_updateBattery}!bleHandler.h@{bleHandler.h}}
+\doxysubsubsection{task\_updateBattery()}
+{\footnotesize\ttfamily void task\+\_\+update\+Battery (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
+
+
+
+This task periodically updates the battery level in the G\+A\+TT database. The G\+A\+TT database is only updated at a certain frequency way below the sampling rate to avoid overloading the system by updating the database at a high frequency. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & A pointer to the used \doxyref{Battery\+\_\+t}{p.}{struct_battery__t} struct\\
+\hline
+\end{DoxyParams}
+This task periodically updates the battery level in the G\+A\+TT database. The G\+A\+TT database is only updated at a certain frequency way below the sampling rate to avoid overloading the system by updating the database at a high frequency. \mbox{\label{ble_handler_8h_a6d98794838cd173d86a8931f9deb1660}} 
+\index{bleHandler.h@{bleHandler.h}!updateSettingsGatt@{updateSettingsGatt}}
+\index{updateSettingsGatt@{updateSettingsGatt}!bleHandler.h@{bleHandler.h}}
+\doxysubsubsection{updateSettingsGatt()}
+{\footnotesize\ttfamily void update\+Settings\+Gatt (\begin{DoxyParamCaption}\item[{\textbf{ settings\+\_\+t}}]{setting,  }\item[{uint16}]{value,  }\item[{uint8}]{flags }\end{DoxyParamCaption})}
+
+
+
+Helper function for updating the G\+A\+TT database and settings\+\_\+t struct with new settings. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em setting} & \\
+\hline
+{\em value} & \\
+\hline
+{\em flags} & \\
+\hline
+\end{DoxyParams}

@@ -1,0 +1,144 @@
+\doxysection{wat\+Utility.\+h File Reference}
+\label{wat_utility_8h}\index{watUtility.h@{watUtility.h}}
+{\ttfamily \#include \char`\"{}project.\+h\char`\"{}}\newline
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{wat_utility_8h_af2e697ac60e05813d45ea2c9c9e79c25}} 
+\#define {\bfseries L\+E\+D\+\_\+\+ON}~0
+\item 
+\mbox{\label{wat_utility_8h_a80700bb63bd56ebabbb4728aa433fd29}} 
+\#define {\bfseries L\+E\+D\+\_\+\+O\+FF}~1
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+uint8 \textbf{ C\+P\+S\+Notifications\+On} (const cy\+\_\+stc\+\_\+ble\+\_\+conn\+\_\+handle\+\_\+t connection, const uint16\+\_\+t $\ast$cccd)
+\begin{DoxyCompactList}\small\item\em Check if notifications on the C\+PS is on. \end{DoxyCompactList}\item 
+void \textbf{ add\+Data\+To\+Array} (uint8\+\_\+t $\ast$array, uint8 $\ast$stride, uint16 data, uint8 size\+Of\+Data)
+\begin{DoxyCompactList}\small\item\em Function to add data in a byte. \end{DoxyCompactList}\item 
+void \textbf{ Send\+Effekt\+Notification} (cy\+\_\+stc\+\_\+ble\+\_\+conn\+\_\+handle\+\_\+t connection, uint8 stride, uint8\+\_\+t $\ast$array)
+\begin{DoxyCompactList}\small\item\em Utility function to do everything involved in transmitting the C\+P\+SS notification. \end{DoxyCompactList}\item 
+void \textbf{ set\+Connection\+Handle} (cy\+\_\+stc\+\_\+ble\+\_\+conn\+\_\+handle\+\_\+t $\ast$handle, void $\ast$event\+Param)
+\begin{DoxyCompactList}\small\item\em Set the Connection Handle object. \end{DoxyCompactList}\item 
+void \textbf{ handle\+Error} (uint8 x)
+\begin{DoxyCompactList}\small\item\em Error handler function that prints to the debugging interface and turns on the error indicating L\+ED. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+your name ({\texttt{ you@domain.\+com}}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2020-\/12-\/13
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2020 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{wat_utility_8h_a640d20dd91267bb8dd02ab89c6f6dd01}} 
+\index{watUtility.h@{watUtility.h}!addDataToArray@{addDataToArray}}
+\index{addDataToArray@{addDataToArray}!watUtility.h@{watUtility.h}}
+\doxysubsubsection{addDataToArray()}
+{\footnotesize\ttfamily void add\+Data\+To\+Array (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{array,  }\item[{uint8 $\ast$}]{stride,  }\item[{uint16}]{data,  }\item[{uint8}]{size\+Of\+Data }\end{DoxyParamCaption})}
+
+
+
+Function to add data in a byte. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em array} & \\
+\hline
+{\em stride} & \\
+\hline
+{\em data} & \\
+\hline
+{\em size\+Of\+Data} & \\
+\hline
+\end{DoxyParams}
+Function to add data in a byte. \mbox{\label{wat_utility_8h_aec729b60785354775f1465ad52f7c3ab}} 
+\index{watUtility.h@{watUtility.h}!CPSNotificationsOn@{CPSNotificationsOn}}
+\index{CPSNotificationsOn@{CPSNotificationsOn}!watUtility.h@{watUtility.h}}
+\doxysubsubsection{CPSNotificationsOn()}
+{\footnotesize\ttfamily uint8 C\+P\+S\+Notifications\+On (\begin{DoxyParamCaption}\item[{cy\+\_\+stc\+\_\+ble\+\_\+conn\+\_\+handle\+\_\+t}]{connection,  }\item[{const uint16\+\_\+t $\ast$}]{cccd }\end{DoxyParamCaption})}
+
+
+
+Check if notifications on the C\+PS is on. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & The current connection handle \\
+\hline
+{\em cccd} & The place to store Client Characteristic Configuration Descriptor \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+uint8 0 if off and 1 if on
+\end{DoxyReturn}
+Check if notifications on the C\+PS is on. \mbox{\label{wat_utility_8h_a98ad3da23b815a429ac865a3a6881d63}} 
+\index{watUtility.h@{watUtility.h}!handleError@{handleError}}
+\index{handleError@{handleError}!watUtility.h@{watUtility.h}}
+\doxysubsubsection{handleError()}
+{\footnotesize\ttfamily void handle\+Error (\begin{DoxyParamCaption}\item[{uint8}]{x }\end{DoxyParamCaption})}
+
+
+
+Error handler function that prints to the debugging interface and turns on the error indicating L\+ED. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & \\
+\hline
+\end{DoxyParams}
+\mbox{\label{wat_utility_8h_a82368e54a9c5d0f75be052744b0e6bb0}} 
+\index{watUtility.h@{watUtility.h}!SendEffektNotification@{SendEffektNotification}}
+\index{SendEffektNotification@{SendEffektNotification}!watUtility.h@{watUtility.h}}
+\doxysubsubsection{SendEffektNotification()}
+{\footnotesize\ttfamily void Send\+Effekt\+Notification (\begin{DoxyParamCaption}\item[{cy\+\_\+stc\+\_\+ble\+\_\+conn\+\_\+handle\+\_\+t}]{connection,  }\item[{uint8}]{stride,  }\item[{uint8\+\_\+t $\ast$}]{array }\end{DoxyParamCaption})}
+
+
+
+Utility function to do everything involved in transmitting the C\+P\+SS notification. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & \\
+\hline
+{\em stride} & \\
+\hline
+{\em array} & \\
+\hline
+\end{DoxyParams}
+\mbox{\label{wat_utility_8h_ad754c23a20868be6385751c0f6d443c7}} 
+\index{watUtility.h@{watUtility.h}!setConnectionHandle@{setConnectionHandle}}
+\index{setConnectionHandle@{setConnectionHandle}!watUtility.h@{watUtility.h}}
+\doxysubsubsection{setConnectionHandle()}
+{\footnotesize\ttfamily void set\+Connection\+Handle (\begin{DoxyParamCaption}\item[{cy\+\_\+stc\+\_\+ble\+\_\+conn\+\_\+handle\+\_\+t $\ast$}]{handle,  }\item[{void $\ast$}]{event\+Param }\end{DoxyParamCaption})}
+
+
+
+Set the Connection Handle object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em handle} & \\
+\hline
+{\em event\+Param} & \\
+\hline
+\end{DoxyParams}
+Set the Connection Handle object.
+
+
+\begin{DoxyParams}{Parameters}
+{\em handle} & The handle to be updated \\
+\hline
+{\em event\+Param} & The event parameter from the event handler \\
+\hline
+\end{DoxyParams}

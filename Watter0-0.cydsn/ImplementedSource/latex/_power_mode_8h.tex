@@ -1,0 +1,63 @@
+\doxysection{Power\+Mode.\+h File Reference}
+\label{_power_mode_8h}\index{PowerMode.h@{PowerMode.h}}
+{\ttfamily \#include \char`\"{}project.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \textbf{ task\+\_\+goto\+Deep\+Sleep} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em This task can be used to enable deep sleep if not connected The task uses the conn\+State variable to check if the connection state. \end{DoxyCompactList}\item 
+cy\+\_\+en\+\_\+syspm\+\_\+status\+\_\+t \textbf{ Deep\+Sleep\+Callback} (cy\+\_\+stc\+\_\+syspm\+\_\+callback\+\_\+params\+\_\+t $\ast$callback\+Params, cy\+\_\+en\+\_\+syspm\+\_\+callback\+\_\+mode\+\_\+t mode)
+\begin{DoxyCompactList}\small\item\em The callback function for going to or waking up from deepsleep. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+your name ({\texttt{ you@domain.\+com}}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2020-\/12-\/13
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2020 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{_power_mode_8h_af4db346ba21e7e6eadfbedcf66f2828a}} 
+\index{PowerMode.h@{PowerMode.h}!DeepSleepCallback@{DeepSleepCallback}}
+\index{DeepSleepCallback@{DeepSleepCallback}!PowerMode.h@{PowerMode.h}}
+\doxysubsubsection{DeepSleepCallback()}
+{\footnotesize\ttfamily cy\+\_\+en\+\_\+syspm\+\_\+status\+\_\+t Deep\+Sleep\+Callback (\begin{DoxyParamCaption}\item[{cy\+\_\+stc\+\_\+syspm\+\_\+callback\+\_\+params\+\_\+t $\ast$}]{callback\+Params,  }\item[{cy\+\_\+en\+\_\+syspm\+\_\+callback\+\_\+mode\+\_\+t}]{mode }\end{DoxyParamCaption})}
+
+
+
+The callback function for going to or waking up from deepsleep. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em callback\+Params} & Parameters for the callback function \\
+\hline
+{\em mode} & The callback mode, indicates if the system is waking up or going to sleep \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+cy\+\_\+en\+\_\+syspm\+\_\+status\+\_\+t the status after the callback, returns C\+Y\+\_\+\+S\+Y\+S\+P\+M\+\_\+\+S\+U\+C\+C\+E\+SS on a successful callback 
+\end{DoxyReturn}
+\mbox{\label{_power_mode_8h_a2313a7ce557cbceaf63a9addb9063327}} 
+\index{PowerMode.h@{PowerMode.h}!task\_gotoDeepSleep@{task\_gotoDeepSleep}}
+\index{task\_gotoDeepSleep@{task\_gotoDeepSleep}!PowerMode.h@{PowerMode.h}}
+\doxysubsubsection{task\_gotoDeepSleep()}
+{\footnotesize\ttfamily void task\+\_\+goto\+Deep\+Sleep (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
+
+
+
+This task can be used to enable deep sleep if not connected The task uses the conn\+State variable to check if the connection state. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & unused \\
+\hline
+\end{DoxyParams}

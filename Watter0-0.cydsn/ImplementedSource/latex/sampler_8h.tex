@@ -1,0 +1,62 @@
+\doxysection{sampler.\+h File Reference}
+\label{sampler_8h}\index{sampler.h@{sampler.h}}
+{\ttfamily \#include \char`\"{}project.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}semphr.\+h\char`\"{}}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ sample\+Effekt\+\_\+t}
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{sampler_8h_add0f98b262dccd5ec0075ccd832e0600}} 
+typedef struct \textbf{ sample\+Effekt\+\_\+t} {\bfseries sample\+Effekt\+\_\+t}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \textbf{ task\+\_\+sampler} (void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em This function periodically samples from sensors and stores information about to power output and cadance. The function is implemented as a Free\+T\+R\+OS task, and should be added to scheduler using x\+Task\+Create(). \end{DoxyCompactList}\item 
+\mbox{\label{sampler_8h_a1e452c11f87adea1148939275d24b978}} 
+void {\bfseries sampler\+\_\+init} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{sampler_8h_aef05c3d48d3841ed7fec7766d782c8ef}} 
+\textbf{ sample\+Effekt\+\_\+t} {\bfseries samples}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+your name ({\texttt{ you@domain.\+com}}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2020-\/12-\/13
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2020 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{sampler_8h_aad40839aab143199b15bf8b6c74ce43c}} 
+\index{sampler.h@{sampler.h}!task\_sampler@{task\_sampler}}
+\index{task\_sampler@{task\_sampler}!sampler.h@{sampler.h}}
+\doxysubsubsection{task\_sampler()}
+{\footnotesize\ttfamily void task\+\_\+sampler (\begin{DoxyParamCaption}\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
+
+
+
+This function periodically samples from sensors and stores information about to power output and cadance. The function is implemented as a Free\+T\+R\+OS task, and should be added to scheduler using x\+Task\+Create(). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & void pointer to the datastructure where sampled values is placed. \\
+\hline
+\end{DoxyParams}

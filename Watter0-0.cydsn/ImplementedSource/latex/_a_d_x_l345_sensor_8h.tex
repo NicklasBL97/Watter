@@ -1,0 +1,140 @@
+\doxysection{A\+D\+X\+L345\+Sensor.\+h File Reference}
+\label{_a_d_x_l345_sensor_8h}\index{ADXL345Sensor.h@{ADXL345Sensor.h}}
+{\ttfamily \#include \char`\"{}project.\+h\char`\"{}}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ A\+D\+X\+L345\+I2\+C\+Data}
+\begin{DoxyCompactList}\small\item\em This struct is used when getting raw data from I2C communication with A\+D\+X\+L345. \end{DoxyCompactList}\item 
+struct \textbf{ A\+D\+X\+L345\+Data}
+\begin{DoxyCompactList}\small\item\em This struct is used when data is restructured from the raw I2C data struct. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{_a_d_x_l345_sensor_8h_a862ae8d5eca9d34075b31effea2bb8be}} 
+typedef struct \textbf{ A\+D\+X\+L345\+I2\+C\+Data} \textbf{ A\+D\+X\+L345\+I2\+C\+Data}
+\begin{DoxyCompactList}\small\item\em This struct is used when getting raw data from I2C communication with A\+D\+X\+L345. \end{DoxyCompactList}\item 
+\mbox{\label{_a_d_x_l345_sensor_8h_a52e1fd9e671202f6e6b2ebdd3f0d7263}} 
+typedef struct \textbf{ A\+D\+X\+L345\+Data} \textbf{ A\+D\+X\+L345\+Data}
+\begin{DoxyCompactList}\small\item\em This struct is used when data is restructured from the raw I2C data struct. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\label{_a_d_x_l345_sensor_8h_a3c9434ab097fcd5aa36bcf2349f168dc}} 
+void \textbf{ A\+D\+X\+L345\+Init} ()
+\begin{DoxyCompactList}\small\item\em Initialization function This function writes to a bunch of registers on the sensor, all of which is required for reading from the sensors three axises. It is also within this funciton the user is able to calibrate all of the sensors axises. \end{DoxyCompactList}\item 
+float \textbf{ delta\+Axis2\+Deg} (float x\+Data1, float y\+Data1, float z\+Data1, float x\+Data2, float y\+Data2, float z\+Data2)
+\begin{DoxyCompactList}\small\item\em Calculates the number of degrees between two accelerometer datasets. \end{DoxyCompactList}\item 
+float \textbf{ average} (float rpm\+Data)
+\begin{DoxyCompactList}\small\item\em A moving average filter, used to smooth out the R\+PM calculation. \end{DoxyCompactList}\item 
+float \textbf{ R\+PM} (float x, float y, float z)
+\begin{DoxyCompactList}\small\item\em Calculates the revolutions pr. minute using timed interrupt and a single measurement dataset. \end{DoxyCompactList}\item 
+\textbf{ A\+D\+X\+L345\+Data} \textbf{ A\+D\+X\+L345\+Get\+Data} ()
+\begin{DoxyCompactList}\small\item\em When called, reads from the related I2C registers and stores the meassurement in \char`\"{}data\char`\"{} variable and processes them. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+your name ({\texttt{ you@domain.\+com}}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2020-\/12-\/13
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2020 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{_a_d_x_l345_sensor_8h_a478742601f239145356b68b768e0724e}} 
+\index{ADXL345Sensor.h@{ADXL345Sensor.h}!ADXL345GetData@{ADXL345GetData}}
+\index{ADXL345GetData@{ADXL345GetData}!ADXL345Sensor.h@{ADXL345Sensor.h}}
+\doxysubsubsection{ADXL345GetData()}
+{\footnotesize\ttfamily \textbf{ A\+D\+X\+L345\+Data} A\+D\+X\+L345\+Get\+Data (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+When called, reads from the related I2C registers and stores the meassurement in \char`\"{}data\char`\"{} variable and processes them. 
+
+Is responsible for getting X, Y and Z data from the accelerometer via the I2C read functions. The function divides the read values by the sensitivity of the accelerometer (typ. 256) and also stores the processed values in data.\+x, data.\+y and data.\+z.
+
+\begin{DoxyReturn}{Returns}
+\doxyref{A\+D\+X\+L345\+Data}{p.}{struct_a_d_x_l345_data} Returns the A\+D\+XL data struct, containing the processed data.\+x, data.\+y and data.\+z 
+\end{DoxyReturn}
+\mbox{\label{_a_d_x_l345_sensor_8h_a8e22aff3a9b47ba2881baef447e63b67}} 
+\index{ADXL345Sensor.h@{ADXL345Sensor.h}!average@{average}}
+\index{average@{average}!ADXL345Sensor.h@{ADXL345Sensor.h}}
+\doxysubsubsection{average()}
+{\footnotesize\ttfamily float average (\begin{DoxyParamCaption}\item[{float}]{rpm\+Data }\end{DoxyParamCaption})}
+
+
+
+A moving average filter, used to smooth out the R\+PM calculation. 
+
+Used inside R\+PM function, and uses a circular buffer to store R\+PM values and calculate the moving average of \char`\"{}\+M\char`\"{} values, where \char`\"{}\+M\char`\"{} is the array size.
+
+
+\begin{DoxyParams}{Parameters}
+{\em rpm\+Data} & Raw R\+PM value to be averaged. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+float The calculated average of \char`\"{}\+M\char`\"{} number of raw R\+PM values. 
+\end{DoxyReturn}
+\mbox{\label{_a_d_x_l345_sensor_8h_a5ae619ca837b5e93cc930fec17ec29d8}} 
+\index{ADXL345Sensor.h@{ADXL345Sensor.h}!deltaAxis2Deg@{deltaAxis2Deg}}
+\index{deltaAxis2Deg@{deltaAxis2Deg}!ADXL345Sensor.h@{ADXL345Sensor.h}}
+\doxysubsubsection{deltaAxis2Deg()}
+{\footnotesize\ttfamily float delta\+Axis2\+Deg (\begin{DoxyParamCaption}\item[{float}]{x\+Data1,  }\item[{float}]{y\+Data1,  }\item[{float}]{z\+Data1,  }\item[{float}]{x\+Data2,  }\item[{float}]{y\+Data2,  }\item[{float}]{z\+Data2 }\end{DoxyParamCaption})}
+
+
+
+Calculates the number of degrees between two accelerometer datasets. 
+
+This function uses 3D vector math to calculate the of degrees between two accelerometer measurements. Assumes that both dataset is under the same amout of G-\/force, 1G from gravity, and can only calculate positive degree values.
+
+
+\begin{DoxyParams}{Parameters}
+{\em x\+Data1} & The X value of dataset \#1 \\
+\hline
+{\em y\+Data1} & The Y value of dataset \#1 \\
+\hline
+{\em z\+Data1} & The Z value of dataset \#1\\
+\hline
+{\em x\+Data2} & The X value of dataset \#2 \\
+\hline
+{\em y\+Data2} & The Y value of dataset \#2 \\
+\hline
+{\em z\+Data2} & The Z value of dataset \#2 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+float The calculated number of degrees between dataset \#1 and dataset \#2 
+\end{DoxyReturn}
+\mbox{\label{_a_d_x_l345_sensor_8h_ac485aea0c5ef5f3798559608dbd2c0fa}} 
+\index{ADXL345Sensor.h@{ADXL345Sensor.h}!RPM@{RPM}}
+\index{RPM@{RPM}!ADXL345Sensor.h@{ADXL345Sensor.h}}
+\doxysubsubsection{RPM()}
+{\footnotesize\ttfamily float R\+PM (\begin{DoxyParamCaption}\item[{float}]{x,  }\item[{float}]{y,  }\item[{float}]{z }\end{DoxyParamCaption})}
+
+
+
+Calculates the revolutions pr. minute using timed interrupt and a single measurement dataset. 
+
+This function uses both \doxyref{average()}{p.}{_a_d_x_l345_sensor_8h_a8e22aff3a9b47ba2881baef447e63b67} and \doxyref{delta\+Axis2\+Deg()}{p.}{_a_d_x_l345_sensor_8h_a5ae619ca837b5e93cc930fec17ec29d8} to return revolutions pr. minute
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & \\
+\hline
+{\em y} & \\
+\hline
+{\em z} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+float 
+\end{DoxyReturn}

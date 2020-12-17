@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['sendeffekt_5finit_75',['SendEffekt_init',['../ble_handler_8c.html#a58daa0ca3c0484e4090c4dba2d6437ec',1,'SendEffekt_init():&#160;bleHandler.c'],['../ble_handler_8h.html#a58daa0ca3c0484e4090c4dba2d6437ec',1,'SendEffekt_init():&#160;bleHandler.c']]],
-  ['sendeffektnotification_76',['SendEffektNotification',['../wat_utility_8h.html#a82368e54a9c5d0f75be052744b0e6bb0',1,'watUtility.c']]],
-  ['setconnectionhandle_77',['setConnectionHandle',['../ble_handler_8h.html#ad754c23a20868be6385751c0f6d443c7',1,'setConnectionHandle(cy_stc_ble_conn_handle_t *handle, void *eventParam):&#160;watUtility.c'],['../wat_utility_8h.html#ad754c23a20868be6385751c0f6d443c7',1,'setConnectionHandle(cy_stc_ble_conn_handle_t *handle, void *eventParam):&#160;watUtility.c']]]
+  ['task_5fble_73',['task_ble',['../ble_handler_8h.html#a77f342f27014948fc7999194c853ce8e',1,'bleHandler.c']]],
+  ['task_5fgotodeepsleep_74',['task_gotoDeepSleep',['../_power_mode_8h.html#a2313a7ce557cbceaf63a9addb9063327',1,'PowerMode.c']]],
+  ['task_5fsendeffekt_75',['task_SendEffekt',['../ble_handler_8h.html#a7a6889de3e114c4ad039b377f4b3070d',1,'bleHandler.c']]],
+  ['task_5fupdatebattery_76',['task_updateBattery',['../ble_handler_8h.html#a88bc9880ec3f46995024e0926ba24cd9',1,'bleHandler.c']]]
 ];

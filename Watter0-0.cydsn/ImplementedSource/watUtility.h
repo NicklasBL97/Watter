@@ -1,11 +1,11 @@
 /**
  * @file watUtility.h
- * @author your name (you@domain.com)
- * @brief 
+ * @author Nicklas Lind
+ * @brief This header includes small helper functions for different parts of the system
  * @version 0.1
  * @date 2020-12-13
  * 
- * @copyright Copyright (c) 2020
+ * 
  * 
  */
 

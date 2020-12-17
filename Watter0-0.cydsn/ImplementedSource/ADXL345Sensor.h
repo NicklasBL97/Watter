@@ -1,11 +1,11 @@
 /**
  * @file ADXL345Sensor.h
  * @author your name (you@domain.com)
- * @brief 
+ * @brief This header includes necessary structs and functions to communicate with an ADXL345 accelerometer over I2C
  * @version 0.1
  * @date 2020-12-13
  * 
- * @copyright Copyright (c) 2020
+ * 
  * 
  */
 #pragma once

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['updatesettingsgatt_83',['updateSettingsGatt',['../ble_handler_8c.html#a6d98794838cd173d86a8931f9deb1660',1,'updateSettingsGatt(settings_t setting, uint16 value, uint8 flags):&#160;bleHandler.c'],['../ble_handler_8h.html#a6d98794838cd173d86a8931f9deb1660',1,'updateSettingsGatt(settings_t setting, uint16 value, uint8 flags):&#160;bleHandler.c']]]
+  ['waitforoperation_78',['waitForOperation',['../my___i2_c_8h.html#ae03f86c8f50998f55806f9b04fd57459',1,'my_I2C.c']]],
+  ['writeregister_79',['writeRegister',['../my___i2_c_8h.html#a0ea2d3cc0bc62617bdad20a75630dd2f',1,'my_I2C.c']]]
 ];

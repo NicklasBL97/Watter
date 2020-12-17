@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['timeout_99',['TIMEOUT',['../my___i2_c_8h.html#a45ba202b05caf39795aeca91b0ae547e',1,'my_I2C.h']]]
+  ['log_94',['LOG',['../printer_8h.html#a3577749fb48d57a158b8ac1a0b3ab57e',1,'printer.h']]]
 ];

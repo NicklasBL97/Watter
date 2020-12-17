@@ -81,9 +81,9 @@ $(function() {
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
 <div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="printer_8h.html#aa9b703f900fda1aade653dfbc8fbb4ac">   27</a></span>&#160;}<a class="code" href="printer_8h.html#aa9b703f900fda1aade653dfbc8fbb4ac">SystemInfo_t</a>;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">extern</span> SemaphoreHandle_t printerSema;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">extern</span> SemaphoreHandle_t <a class="code" href="printer_8h.html#a0ebb3014614a1371f1b62734b76a6f80">printerSema</a>;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#define LOG(...) do { \</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="printer_8h.html#a3577749fb48d57a158b8ac1a0b3ab57e">   39</a></span>&#160;<span class="preprocessor">#define LOG(...) do { \</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">    xSemaphoreTake(printerSema,portMAX_DELAY); \</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">    printf(__VA_ARGS__);   \</span></div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">    xSemaphoreGive(printerSema); \</span></div>
@@ -91,12 +91,14 @@ $(function() {
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keywordtype">void</span> <a class="code" href="printer_8h.html#a2eafb0a25933cee7686d206ce80c5843">printSystemInfo</a>(<span class="keywordtype">void</span>* info);</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keywordtype">void</span> printer_init();</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keywordtype">void</span> <a class="code" href="printer_8h.html#af7d0edbae11867139864cff8918d64a1">printer_init</a>();</div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aprinter_8h_html_a2eafb0a25933cee7686d206ce80c5843"><div class="ttname"><a href="printer_8h.html#a2eafb0a25933cee7686d206ce80c5843">printSystemInfo</a></div><div class="ttdeci">void printSystemInfo(void *info)</div><div class="ttdef"><b>Definition:</b> printer.c:27</div></div>
+<div class="ttc" id="aprinter_8h_html_a0ebb3014614a1371f1b62734b76a6f80"><div class="ttname"><a href="printer_8h.html#a0ebb3014614a1371f1b62734b76a6f80">printerSema</a></div><div class="ttdeci">SemaphoreHandle_t printerSema</div><div class="ttdoc">This semaphore is used to lock whenever there is printed to the UART see LOG(...)</div><div class="ttdef"><b>Definition:</b> printer.c:25</div></div>
+<div class="ttc" id="aprinter_8h_html_a2eafb0a25933cee7686d206ce80c5843"><div class="ttname"><a href="printer_8h.html#a2eafb0a25933cee7686d206ce80c5843">printSystemInfo</a></div><div class="ttdeci">void printSystemInfo(void *info)</div><div class="ttdoc">This is a FreeRTOS task made to print information about the system, all information is pointed to in ...</div><div class="ttdef"><b>Definition:</b> printer.c:27</div></div>
 <div class="ttc" id="astruct_system_info__t_html"><div class="ttname"><a href="struct_system_info__t.html">SystemInfo_t</a></div><div class="ttdoc">This struct is used to point at different variables of interrest. Variables can then be printed with ...</div><div class="ttdef"><b>Definition:</b> printer.h:22</div></div>
-<div class="ttc" id="able_handler_8h_html"><div class="ttname"><a href="ble_handler_8h.html">bleHandler.h</a></div></div>
-<div class="ttc" id="a_a_d_x_l345_sensor_8h_html"><div class="ttname"><a href="_a_d_x_l345_sensor_8h.html">ADXL345Sensor.h</a></div></div>
+<div class="ttc" id="aprinter_8h_html_af7d0edbae11867139864cff8918d64a1"><div class="ttname"><a href="printer_8h.html#af7d0edbae11867139864cff8918d64a1">printer_init</a></div><div class="ttdeci">void printer_init()</div><div class="ttdoc">Initialiser function used to initialise the semaphore.</div><div class="ttdef"><b>Definition:</b> printer.c:48</div></div>
+<div class="ttc" id="able_handler_8h_html"><div class="ttname"><a href="ble_handler_8h.html">bleHandler.h</a></div><div class="ttdoc">This header is included to add all BLE functionallity.</div></div>
+<div class="ttc" id="a_a_d_x_l345_sensor_8h_html"><div class="ttname"><a href="_a_d_x_l345_sensor_8h.html">ADXL345Sensor.h</a></div><div class="ttdoc">This header includes necessary structs and functions to communicate with an ADXL345 accelerometer ove...</div></div>
 <div class="ttc" id="aprinter_8h_html_aa9b703f900fda1aade653dfbc8fbb4ac"><div class="ttname"><a href="printer_8h.html#aa9b703f900fda1aade653dfbc8fbb4ac">SystemInfo_t</a></div><div class="ttdeci">struct SystemInfo_t SystemInfo_t</div><div class="ttdoc">This struct is used to point at different variables of interrest. Variables can then be printed with ...</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

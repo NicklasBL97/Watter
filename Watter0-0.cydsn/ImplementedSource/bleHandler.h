@@ -1,11 +1,11 @@
 /**
  * @file bleHandler.h
- * @author your name (you@domain.com)
- * @brief 
+ * @author Nicklas Lind
+ * @brief This header is included to add all BLE functionallity
  * @version 0.1
  * @date 2020-12-13
  * 
- * @copyright Copyright (c) 2020
+ * 
  * 
  */
 #pragma once
@@ -102,16 +102,10 @@ void setConnectionHandle(cy_stc_ble_conn_handle_t* handle, void* eventParam);
 void SendEffekt_init();
 
 /**
- * @brief 
- * 
- */
-void sampler_init();
-
-/**
  * @brief Helper function for updating the GATT database and settings_t struct with new settings
  * 
- * @param setting 
- * @param value 
- * @param flags 
+ * @param setting The setting to update 
+ * @param value The new value for the setting
+ * @param flags indicator if the change is peer initiated or not
  */
 void updateSettingsGatt(settings_t setting ,uint16 value, uint8 flags);

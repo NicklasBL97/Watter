@@ -1,11 +1,11 @@
 /**
  * @file PowerMode.h
- * @author your name (you@domain.com)
- * @brief 
+ * @author Nicklas Lind
+ * @brief This header includes the functions for adding a FreeRTOS task which can make the system go into deepsleep
  * @version 0.1
  * @date 2020-12-13
  * 
- * @copyright Copyright (c) 2020
+ * 
  * 
  */
 

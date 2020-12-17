@@ -58,6 +58,7 @@ int main(void)
     Cy_DMA_Channel_SetInterruptMask(DMA_Sample_HW,0,CY_DMA_INTR_MASK);
     
     //Start subsystems and hardware blocks
+    Opamp_1_Start();
     SendEffekt_init();
     printer_init();
     BatteryInit(&battery);

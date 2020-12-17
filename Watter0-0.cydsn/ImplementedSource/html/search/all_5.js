@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['handleerror_19',['handleError',['../wat_utility_8h.html#a98ad3da23b815a429ac865a3a6881d63',1,'watUtility.c']]]
+  ['log_18',['LOG',['../printer_8h.html#a3577749fb48d57a158b8ac1a0b3ab57e',1,'printer.h']]]
 ];

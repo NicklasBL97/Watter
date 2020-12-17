@@ -1,5 +1,10 @@
 \doxysection{printer.\+h File Reference}
 \label{printer_8h}\index{printer.h@{printer.h}}
+
+
+This header includes a L\+OG macro for printing to stdout and a Free\+R\+T\+OS task which periodically writes information about the system to a U\+A\+RT.  
+
+
 {\ttfamily \#include \char`\"{}project.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}ble\+Handler.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}stdio.\+h\char`\"{}}\newline
@@ -12,8 +17,8 @@ struct \textbf{ System\+Info\+\_\+t}
 \doxysubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\#define {\bfseries L\+OG}(...)
-\end{DoxyCompactItemize}
+\#define \textbf{ L\+OG}(...)
+\begin{DoxyCompactList}\small\item\em This macro is used to write to stdout. The macro locks the printer\+Sema semaphore. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
@@ -24,31 +29,30 @@ typedef struct \textbf{ System\+Info\+\_\+t} \textbf{ System\+Info\+\_\+t}
 \begin{DoxyCompactItemize}
 \item 
 void \textbf{ print\+System\+Info} (void $\ast$info)
-\item 
+\begin{DoxyCompactList}\small\item\em This is a Free\+R\+T\+OS task made to print information about the system, all information is pointed to in a \doxyref{System\+Info\+\_\+t}{p.}{struct_system_info__t} struct. \end{DoxyCompactList}\item 
 \mbox{\label{printer_8h_af7d0edbae11867139864cff8918d64a1}} 
-void {\bfseries printer\+\_\+init} ()
-\end{DoxyCompactItemize}
+void \textbf{ printer\+\_\+init} ()
+\begin{DoxyCompactList}\small\item\em Initialiser function used to initialise the semaphore. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\label{printer_8h_a0ebb3014614a1371f1b62734b76a6f80}} 
-Semaphore\+Handle\+\_\+t {\bfseries printer\+Sema}
-\end{DoxyCompactItemize}
+Semaphore\+Handle\+\_\+t \textbf{ printer\+Sema}
+\begin{DoxyCompactList}\small\item\em This semaphore is used to lock whenever there is printed to the U\+A\+RT see \doxyref{L\+O\+G(...)}{p.}{printer_8h_a3577749fb48d57a158b8ac1a0b3ab57e} \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
+This header includes a L\+OG macro for printing to stdout and a Free\+R\+T\+OS task which periodically writes information about the system to a U\+A\+RT. 
+
 \begin{DoxyAuthor}{Author}
-your name ({\texttt{ you@domain.\+com}}) 
+Nicklas Lind 
 \end{DoxyAuthor}
 \begin{DoxyVersion}{Version}
 0.\+1 
 \end{DoxyVersion}
 \begin{DoxyDate}{Date}
-2020-\/12-\/13
+2020-\/12-\/13 
 \end{DoxyDate}
-\begin{DoxyCopyright}{Copyright}
-Copyright (c) 2020 
-\end{DoxyCopyright}
 
 
 \doxysubsection{Macro Definition Documentation}
@@ -69,6 +73,10 @@ Copyright (c) 2020
 \end{DoxyCode}
 
 
+This macro is used to write to stdout. The macro locks the printer\+Sema semaphore. 
+
+
+
 \doxysubsection{Function Documentation}
 \mbox{\label{printer_8h_a2eafb0a25933cee7686d206ce80c5843}} 
 \index{printer.h@{printer.h}!printSystemInfo@{printSystemInfo}}
@@ -77,7 +85,11 @@ Copyright (c) 2020
 {\footnotesize\ttfamily void print\+System\+Info (\begin{DoxyParamCaption}\item[{void $\ast$}]{info }\end{DoxyParamCaption})}
 
 
+
+This is a Free\+R\+T\+OS task made to print information about the system, all information is pointed to in a \doxyref{System\+Info\+\_\+t}{p.}{struct_system_info__t} struct. 
+
+
 \begin{DoxyParams}{Parameters}
-{\em info} & \\
+{\em info} & a pointer to a \doxyref{System\+Info\+\_\+t}{p.}{struct_system_info__t} struct containing pointers to variables of interrest \\
 \hline
 \end{DoxyParams}

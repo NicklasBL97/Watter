@@ -1,14 +1,3 @@
-/**
- * @file bleHandler.c
- * @author nicklas
- * @brief module for all things bluetooth
- * @version 1.0
- * @date 2020-12-13
- * 
- * 
- * 
- */
-
 #include "project.h"
 #include "stdio.h"
 #include "FreeRTOS.h"
@@ -16,7 +5,6 @@
 #include "semphr.h"
 #include "limits.h"
 #include "bleHandler.h"
-#include "sampler.h"
 #include "watUtility.h"
 #include "Battery.h"
 
@@ -47,7 +35,7 @@ void handleCY_BLE_SETT_SAMPLEDELAY_CHAR_HANDLE(cy_stc_ble_gatts_write_cmd_req_pa
     if(val == 5 || val == 10 || val == 15 || val == 20)
     {
         updateSettingsGatt(SAMPLERATE ,val, CY_BLE_GATT_DB_PEER_INITIATED);
-        samples.delay = (uint16)(1000/val);
+        //TODO Write to the parameter to change sample frequency locally
     }
 }
 
@@ -186,8 +174,8 @@ void task_updateBattery(void* arg){
     
     while(1){
         
-        //TODO: add a lookup for which Voltage intervals correspond to different battery percentages 
-        //in stead of the voltage to percentage conversion here.
+        //TODO: add a lookup for which Voltage intervals correspond to different
+        //battery percentages in stead of the voltage to percentage conversion here.
         battery->batterylvl = (uint8) 100 * battery->BatteryVoltage/3300.0;
         
         if(battery->batterylvl > 100)

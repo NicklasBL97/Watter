@@ -820,7 +820,7 @@
     <Data key="count" value="0" />
   </Group>
   <Group key="System3">
-    <Data key="CYDEV_CONFIG_UNUSED_IO" value="AllowButWarn" />
+    <Data key="CYDEV_CONFIG_UNUSED_IO" value="Disallowed" />
     <Data key="CYDEV_CONFIGURATION_MODE" value="COMPRESSED" />
     <Data key="CYDEV_CPUSS0_TRACE_DATA0" value="P77" />
     <Data key="CYDEV_CPUSS0_TRACE_DATA1" value="P92" />

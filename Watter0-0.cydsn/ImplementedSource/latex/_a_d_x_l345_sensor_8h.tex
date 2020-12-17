@@ -1,5 +1,10 @@
 \doxysection{A\+D\+X\+L345\+Sensor.\+h File Reference}
 \label{_a_d_x_l345_sensor_8h}\index{ADXL345Sensor.h@{ADXL345Sensor.h}}
+
+
+This header includes necessary structs and functions to communicate with an A\+D\+X\+L345 accelerometer over I2C.  
+
+
 {\ttfamily \#include \char`\"{}project.\+h\char`\"{}}\newline
 \doxysubsection*{Data Structures}
 \begin{DoxyCompactItemize}
@@ -28,12 +33,14 @@ float \textbf{ delta\+Axis2\+Deg} (float x\+Data1, float y\+Data1, float z\+Data
 float \textbf{ average} (float rpm\+Data)
 \begin{DoxyCompactList}\small\item\em A moving average filter, used to smooth out the R\+PM calculation. \end{DoxyCompactList}\item 
 float \textbf{ R\+PM} (float x, float y, float z)
-\begin{DoxyCompactList}\small\item\em Calculates the revolutions pr. minute using timed interrupt and a single measurement dataset. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Calculates the revolutions pr. minute. \end{DoxyCompactList}\item 
 \textbf{ A\+D\+X\+L345\+Data} \textbf{ A\+D\+X\+L345\+Get\+Data} ()
 \begin{DoxyCompactList}\small\item\em When called, reads from the related I2C registers and stores the meassurement in \char`\"{}data\char`\"{} variable and processes them. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
+This header includes necessary structs and functions to communicate with an A\+D\+X\+L345 accelerometer over I2C. 
+
 \begin{DoxyAuthor}{Author}
 your name ({\texttt{ you@domain.\+com}}) 
 \end{DoxyAuthor}
@@ -41,11 +48,8 @@ your name ({\texttt{ you@domain.\+com}})
 0.\+1 
 \end{DoxyVersion}
 \begin{DoxyDate}{Date}
-2020-\/12-\/13
+2020-\/12-\/13 
 \end{DoxyDate}
-\begin{DoxyCopyright}{Copyright}
-Copyright (c) 2020 
-\end{DoxyCopyright}
 
 
 \doxysubsection{Function Documentation}
@@ -122,19 +126,19 @@ float The calculated number of degrees between dataset \#1 and dataset \#2
 
 
 
-Calculates the revolutions pr. minute using timed interrupt and a single measurement dataset. 
+Calculates the revolutions pr. minute. 
 
-This function uses both \doxyref{average()}{p.}{_a_d_x_l345_sensor_8h_a8e22aff3a9b47ba2881baef447e63b67} and \doxyref{delta\+Axis2\+Deg()}{p.}{_a_d_x_l345_sensor_8h_a5ae619ca837b5e93cc930fec17ec29d8} to return revolutions pr. minute
+This function uses both \doxyref{average()}{p.}{_a_d_x_l345_sensor_8h_a8e22aff3a9b47ba2881baef447e63b67} and \doxyref{delta\+Axis2\+Deg()}{p.}{_a_d_x_l345_sensor_8h_a5ae619ca837b5e93cc930fec17ec29d8} to return an average revolutions pr. minute. by using timed interrupt and a single measurement dataset.
 
 
 \begin{DoxyParams}{Parameters}
-{\em x} & \\
+{\em x} & The momentary value of the X Axis. \\
 \hline
-{\em y} & \\
+{\em y} & The momentary value of the y Axis. \\
 \hline
-{\em z} & \\
+{\em z} & The momentary value of the Z Axis. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-float 
+float a average revolutions pr. minute. 
 \end{DoxyReturn}

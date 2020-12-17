@@ -1,5 +1,10 @@
 \doxysection{ble\+Handler.\+h File Reference}
 \label{ble_handler_8h}\index{bleHandler.h@{bleHandler.h}}
+
+
+This header is included to add all B\+LE functionallity.  
+
+
 {\ttfamily \#include \char`\"{}project.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Free\+R\+T\+O\+S.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}semphr.\+h\char`\"{}}\newline
@@ -48,9 +53,6 @@ void \textbf{ set\+Connection\+Handle} (cy\+\_\+stc\+\_\+ble\+\_\+conn\+\_\+hand
 \mbox{\label{ble_handler_8h_a58daa0ca3c0484e4090c4dba2d6437ec}} 
 void \textbf{ Send\+Effekt\+\_\+init} ()
 \begin{DoxyCompactList}\small\item\em Init function for the send\+Effect\+Info variable. \end{DoxyCompactList}\item 
-\mbox{\label{ble_handler_8h_a1e452c11f87adea1148939275d24b978}} 
-void {\bfseries sampler\+\_\+init} ()
-\item 
 void \textbf{ update\+Settings\+Gatt} (\textbf{ settings\+\_\+t} setting, uint16 value, uint8 flags)
 \begin{DoxyCompactList}\small\item\em Helper function for updating the G\+A\+TT database and settings\+\_\+t struct with new settings. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Variables}
@@ -68,18 +70,17 @@ Semaphore\+Handle\+\_\+t \textbf{ power\+Mutex}
 
 
 \doxysubsection{Detailed Description}
+This header is included to add all B\+LE functionallity. 
+
 \begin{DoxyAuthor}{Author}
-your name ({\texttt{ you@domain.\+com}}) 
+Nicklas Lind 
 \end{DoxyAuthor}
 \begin{DoxyVersion}{Version}
 0.\+1 
 \end{DoxyVersion}
 \begin{DoxyDate}{Date}
-2020-\/12-\/13
+2020-\/12-\/13 
 \end{DoxyDate}
-\begin{DoxyCopyright}{Copyright}
-Copyright (c) 2020 
-\end{DoxyCopyright}
 
 
 \doxysubsection{Function Documentation}
@@ -157,10 +158,10 @@ Helper function for updating the G\+A\+TT database and settings\+\_\+t struct wi
 
 
 \begin{DoxyParams}{Parameters}
-{\em setting} & \\
+{\em setting} & The setting to update \\
 \hline
-{\em value} & \\
+{\em value} & The new value for the setting \\
 \hline
-{\em flags} & \\
+{\em flags} & indicator if the change is peer initiated or not \\
 \hline
 \end{DoxyParams}

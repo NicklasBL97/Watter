@@ -25,6 +25,7 @@
 
 #include "ImplementedSource/bleHandler.h"
 #include "ImplementedSource/printer.h"
+#include "ImplementedSource/powerCalc.h"
 
 float test;
 uint32 dst[2];
@@ -34,9 +35,14 @@ ADXL345Data accelerometerData;
 
 
 void ADC_ISR_Callback(void){
-    sendEffectInfo.power = ADC_CountsTo_mVolts(0,dst[0]);
-    battery.BatteryVoltage = ADC_CountsTo_mVolts(1,dst[1]);
     
+    handleSample(ADC_CountsTo_mVolts(0,dst[0]));
+    if (getSamplesPrBroadcast() == getSamplesSinceBroadcast())
+    {
+        sendEffectInfo.power = getPower(sendEffectInfo.cadance);
+    }
+    
+    battery.BatteryVoltage = ADC_CountsTo_mVolts(1,dst[1]);
     Cy_DMA_Channel_ClearInterrupt(DMA_Sample_HW, 0);
 }
 
